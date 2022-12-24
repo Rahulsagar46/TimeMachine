@@ -14,5 +14,3 @@ Database: MySQL (Variant agnostic) in combination with Django ORM
 
 NOTE: This project TimeMachine is a component of a bigger project called 'LESS' which is aimed at developing 
 various enterprise software.
-
-Hello test
