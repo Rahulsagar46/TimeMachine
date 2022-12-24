@@ -3,3 +3,12 @@ It offers time recordings for people working from home. Also a vacation planner 
 it. It offers approval workflows, time entry corrections, holiday overview statistics etc. The detailed
 design philosophy is explained in the section below.
 
+Description:
+
+TimeMachine is supposed to be a web application. The following are the technologies being considered for 
+development
+
+Backend : Django framework (Python)
+Frontend: ReactJS
+Database: MySQL (Variant agnostic) in combination with Django ORM
+ 
