@@ -1,0 +1,5 @@
+TimeMachine is an integrated web application for attendance management and vacation management. 
+It offers time recordings for people working from home. Also a vacation planner is integrated into
+it. It offers approval workflows, time entry corrections, holiday overview statistics etc. The detailed
+design philosophy is explained in the section below.
+
