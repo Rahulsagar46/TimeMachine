@@ -14,3 +14,58 @@ Database: MySQL (Variant agnostic) in combination with Django ORM
 
 NOTE: This project TimeMachine is a component of a bigger project called 'LESS' which is aimed at developing 
 various enterprise software.
+
+Feature description:
+
+Time logging:
+
+Every user should have access to this function. User should be able to click a button to notify checkin and a button to notify checkout. 
+He/She can do this as often as they want throughout the day. The checkin and check out times has to be registered and the total hours worked
+Is calculated from the time interval between check in and check out. The mandatory 30 min break time has to be deducted from the  working hours
+
+For each user, the following items has to be logged:
+
+-> The list of checkin and check out times for the day
+-> Total hours worked for the day by deducting mandatory break time
+-> Expected total working hours for the day (configurable)
+-> Mandatory break time (configurable)
+-> Mandatory break time interval (configurable)
+-> Net Hours as a result of Flexi time -> calculated based on every day final working hours. If a person works more than 8 hours a day then the
+Extra time is added to the Net hours. Similarly if the person works less than 8 hours then the net hours has to be deducted.
+-> Max cap on extra hours (configurable)
+-> Time correction functionality by raising a request to the manager
+-> get it approved by the manager and reflect the difference only after approval.
+
+
+Design Problem for time logging:
+
+QCOM needs a time logging system for recording the work start and work end times. Every user must have access to this system. Each user will have details
+like first_name, last_name, sap_id, email_id. Every day when user starts working he / she is supposed to be click a button which records the start time of
+Working. At the end of the day, he / she is supposed to click a button again which records the end time of work. In between start time and end time, user can 
+Click start and end (workin / workout) as many times as they want. After every 'workout' request, the Total number of hours worked for the day is calculated.
+In calculating total hours worked for the day, in addition to 'workin', 'workout' times (there can be multiple pairs of workin, workout requests through out 
+the day for total duration all the time elapsed between each individual workin, workout has to be calculated and summed up) mandatory break time (for breakfast &
+Lunch break amounting to 30 min (it has to be configurable)) has to be deducted from total working hours for the day and is then compared with the mandatory working
+hours for the day. The Net hours which we derive from above description has to be added or subtracted from the 'Total Net Hours'. 
+
+The following is the calculation:
+
+total_working_hours_for_the_day = (work_out1 - work_in1) + (work_out2 - work_in2) + .... (workout_n-workin_n) - mandatory_break_time 
+
+total_net_hours = (already_existing_total_net_hours) + (mandatory_work_hours_per_day - total_working_hours_for_the_day)   
+
+The total_net_hours at the end of the day has to be stored along with total_working_hours_for_the_day all the list of work_in, work_out times for the day has to be stored
+In DB for listing in the UI.  
+
+The fields 'mandatory_break_time' and 'mandatory_work_hours_per_day' has to be configurable for each individual user as these parameters can change any time based on company
+Policies and contractual agreements.
+
+Since, it is possible that users sometimes forgets to record work_in, work_out times, there should be an interface to raise a correction to the time entries. This correction 
+Is then sent for approval to the manager of the team. The final calculations are then updated once the manager approves the requested correction. 
+
+Users having a managerial role, must have the ability to see an overview of times from his / her team members.
+Managers also must have an interface in which they can see the list of all active correction requests and can take bulk actions like approve all, reject all for the corrections
+In the list.
+
+In addition to a web interface, used to log work_in, work_out times, the system has to be designed in a such a way that the work_in, work_out times coming from access machines
+At the office has to be logged with the same logic as explained above.
