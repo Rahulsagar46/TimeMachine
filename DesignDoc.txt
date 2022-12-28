@@ -69,5 +69,3 @@ In the list.
 
 In addition to a web interface, used to log work_in, work_out times, the system has to be designed in a such a way that the work_in, work_out times coming from access machines
 At the office has to be logged with the same logic as explained above.
-
-test
