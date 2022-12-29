@@ -1,3 +1,6 @@
 from django.contrib import admin
+from timelog.models import User, UserDefaults
 
-# Register your models here.
+
+admin.site.register(User)
+admin.site.register(UserDefaults)
