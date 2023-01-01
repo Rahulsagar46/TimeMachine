@@ -13,7 +13,6 @@ from timelog.core.user_management_funcs import list_all_users, get_initial_user_
 
 @api_view(['GET'])
 def load_initial_values(request, user_login):
-    print(user_login)
     (success, user_details) = get_initial_user_details(user_login)
     if success:
         return Response(user_details)

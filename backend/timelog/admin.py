@@ -1,6 +1,7 @@
 from django.contrib import admin
-from timelog.models import User, UserDefaults
+from timelog.models import User, UserDefault, UserTimeSummary
 
 
 admin.site.register(User)
-admin.site.register(UserDefaults)
+admin.site.register(UserDefault)
+admin.site.register(UserTimeSummary)

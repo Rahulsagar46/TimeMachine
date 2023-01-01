@@ -1,5 +1,5 @@
-from timelog.models import User, UserDefaults
-from timelog.serializers import UserSerializer, UserDefaultSerializer
+from timelog.models import User
+from timelog.serializers import UserSerializer, UserDataSerializer
 
 
 def list_all_users():
@@ -11,14 +11,10 @@ def list_all_users():
 
 def get_initial_user_details(user_login):
     try:
-        user_data = User.objects.get(login_name=user_login)
-        user_defaults = UserDefaults.objects.get(user_id=user_data.unique_id)
-        serializer1 = UserSerializer(user_data)
-        serializer2 = UserDefaultSerializer(user_defaults)
-        final_json = {
-            "main": serializer1.data,
-            "defaults": serializer2.data
-        }
+        # objects_include_related is a custom manager method for User model to load all related information of User
+        user = User.objects_include_related.get(login_name=user_login)
+        serializer = UserDataSerializer(user)
+        final_json = serializer.data
         status = True
     except User.DoesNotExist:
         status = False
