@@ -21,3 +21,13 @@ def get_initial_user_details(user_login):
         final_json = None
 
     return (status, final_json)
+
+
+def create_new_user_with_relevant_data(user_data):
+    serializer = UserDataSerializer(data=user_data)
+    is_valid = serializer.is_valid()
+    if is_valid:
+        new_user = serializer.create(serializer.data)
+        return (True, new_user)
+    else:
+        return (False, serializer.errors)

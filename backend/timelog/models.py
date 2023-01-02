@@ -24,6 +24,26 @@ class UserCustomManager1(models.Manager):
 
         return q_obj.get()
 
+    def create(self, login_name, sap_id, first_name, last_name, email_id, status, mandatory_break_time, mandatory_working_time_per_day, net_working_hrs):
+        # add user
+        new_user = User.objects.create(
+            login_name=login_name, sap_id=sap_id, first_name=first_name, last_name=last_name, email_id=email_id, status=status)
+
+        new_user.save()
+
+        # add user defaults
+        new_user_defaults = UserDefault.objects.create(
+            user=new_user, mandatory_break_time=mandatory_break_time, mandatory_working_time_per_day=mandatory_working_time_per_day)
+
+        # add user summary fields
+        new_user_time_summary = UserTimeSummary.objects.create(
+            user=new_user, net_working_hrs=net_working_hrs)
+
+        new_user_defaults.save()
+        new_user_time_summary.save()
+
+        return new_user
+
 # models
 
 
