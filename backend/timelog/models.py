@@ -14,6 +14,7 @@ class UserCustomManager1(models.Manager):
         user_obj = user_details[0]
         user_defaults = user_obj.userdefault_set.get()
         user_summary = user_obj.usertimesummary_set.get()
+        user_live_status = user_obj.userlivestatus
 
         q_obj = user_details.annotate(
             mandatory_break_time=Coalesce(user_defaults.mandatory_break_time, 0))
@@ -21,6 +22,10 @@ class UserCustomManager1(models.Manager):
             mandatory_working_time_per_day=Coalesce(user_defaults.mandatory_working_time_per_day, 0))
         q_obj = q_obj.annotate(net_working_hrs=Coalesce(
             user_summary.net_working_hrs, 0))
+        q_obj = q_obj.annotate(live_state=Coalesce(
+            user_live_status.state, 0))
+        q_obj = q_obj.annotate(total_work_time=Coalesce(
+            user_live_status.total_work_time, 0))
 
         return q_obj.get()
 
@@ -39,8 +44,13 @@ class UserCustomManager1(models.Manager):
         new_user_time_summary = UserTimeSummary.objects.create(
             user=new_user, net_working_hrs=net_working_hrs)
 
+        # add user live status fields
+        user_live_status = UserLiveStatus.objects.create(
+            user=new_user, state=0, total_work_time=0)
+
         new_user_defaults.save()
         new_user_time_summary.save()
+        user_live_status.save()
 
         return new_user
 
@@ -58,7 +68,7 @@ class User(models.Model):
     sap_id = models.CharField(max_length=10, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email_id = models.CharField(max_length=100)
+    email_id = models.EmailField(max_length=100)
     status = models.IntegerField(
         choices=[(0, "inactive"), (1, "active")], default=1)
 
@@ -83,3 +93,22 @@ class UserTimeSummary(models.Model):
 
     def __str__(self):
         return "%s_summary" % (self.user, )
+
+
+class TimeLogEntry(models.Model):
+    log_user = models.ForeignKey('User', on_delete=models.CASCADE)
+    log_date = models.DateField()
+    log_time = models.TimeField()
+    log_type = models.IntegerField(choices=[(0, "punch_out"), (1, "punch_in")])
+
+    def __str__(self):
+        return "%s_%s_%s" % (self.log_date, self.log_user, self.log_type)
+
+
+class UserLiveStatus(models.Model):
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    state = models.IntegerField(choices=[(0, "out"), (1, "in")])
+    total_work_time = models.IntegerField()
+
+    def __str__(self):
+        return "%s_livestatus" % (self.user, )

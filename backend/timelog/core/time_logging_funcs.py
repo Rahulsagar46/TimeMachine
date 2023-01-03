@@ -1,8 +1,11 @@
-import time
+from timelog.serializers import TimeLogEntrySerializer
 
 
-def record_work_in_time():
-    work_in_time = time.time()
-    default_user = "rvoduru"
-
-    return "%s logged in at %s" % (default_user, work_in_time,)
+def record_time_entry(time_log_entry):
+    serializer = TimeLogEntrySerializer(data=time_log_entry)
+    is_valid = serializer.is_valid()
+    if is_valid:
+        ack = serializer.create(serializer.data)
+        return (True, ack)
+    else:
+        return (False, serializer.errors)

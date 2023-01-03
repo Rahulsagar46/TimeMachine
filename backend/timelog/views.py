@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from timelog.core.time_logging_funcs import record_work_in_time
+from timelog.core.time_logging_funcs import record_time_entry
 from timelog.core.user_management_funcs import list_all_users, get_initial_user_details, create_new_user_with_relevant_data
 
 # initial loading parameters
@@ -22,10 +22,13 @@ def load_initial_values(request, user_login):
 
 # time entry functions
 
-
+@api_view(['POST'])
+@csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
 def log_time_entry(request):
-    response = record_work_in_time()
-    return HttpResponse(response)
+    (success, return_data) = record_time_entry(request.data)
+    if success:
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 # user management function
 
