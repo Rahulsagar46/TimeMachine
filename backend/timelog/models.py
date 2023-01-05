@@ -1,3 +1,4 @@
+from datetime import datetime, date
 from django.db import models
 from django.db.models.functions import Coalesce
 
@@ -22,6 +23,10 @@ class UserCustomManager1(models.Manager):
             mandatory_working_time_per_day=Coalesce(user_defaults.mandatory_working_time_per_day, 0))
         q_obj = q_obj.annotate(net_working_hrs=Coalesce(
             user_summary.net_working_hrs, 0))
+        q_obj = q_obj.annotate(live_date=Coalesce(
+            user_live_status.date, date.today()))
+        q_obj = q_obj.annotate(live_time=Coalesce(
+            user_live_status.time, datetime.now().time()))
         q_obj = q_obj.annotate(live_state=Coalesce(
             user_live_status.state, 0))
         q_obj = q_obj.annotate(total_work_time=Coalesce(
@@ -46,7 +51,7 @@ class UserCustomManager1(models.Manager):
 
         # add user live status fields
         user_live_status = UserLiveStatus.objects.create(
-            user=new_user, state=0, total_work_time=0)
+            user=new_user, date=date.today(), time=datetime.now().time(), state=0, total_work_time=0)
 
         new_user_defaults.save()
         new_user_time_summary.save()
@@ -107,6 +112,8 @@ class TimeLogEntry(models.Model):
 
 class UserLiveStatus(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
+    date = models.DateField()
+    time = models.TimeField()
     state = models.IntegerField(choices=[(0, "out"), (1, "in")])
     total_work_time = models.IntegerField()
 

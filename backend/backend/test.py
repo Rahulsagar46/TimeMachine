@@ -1,5 +1,6 @@
 import requests
 import json
+from datetime import date, datetime
 
 headers = {
     'Accept': 'application/json',
@@ -7,11 +8,16 @@ headers = {
 }
 
 
+datetime_now = datetime.now()
+log_date = datetime_now.strftime("%Y-%m-%d")
+log_time = datetime_now.strftime("%H:%M:%S")
+
+
 def add_time_log_entry():
     time_log_entry = {
-        "log_user": "rvoduru",
-        "log_date": "2023-01-03",
-        "log_time": "12:30:23",
+        "log_user": "jpduggineni",
+        "log_date": log_date,
+        "log_time": log_time,
         "log_type": 0
     }
     r = requests.post("http://127.0.0.1:8000/punch/",
