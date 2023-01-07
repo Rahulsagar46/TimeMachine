@@ -17,8 +17,9 @@ def add_time_log_entry():
     time_log_entry = {
         "log_user": "jpduggineni",
         "log_date": log_date,
-        "log_time": log_time,
-        "log_type": 0
+        "log_in_time": log_time,
+        # "log_out_time": log_time,
+        "log_state": 0
     }
     r = requests.post("http://127.0.0.1:8000/punch/",
                       json=time_log_entry, headers=headers)
@@ -35,7 +36,7 @@ def add_test_users():
         "email_id": "jpd@gmail.com",
         "mandatory_break_time": 1800,
         "mandatory_working_time_per_day": 28800,
-        "net_working_hrs": 21600
+        "net_working_time": 21600
     }
     r = requests.post("http://127.0.0.1:8000/add/",
                       json=user_data, headers=headers)

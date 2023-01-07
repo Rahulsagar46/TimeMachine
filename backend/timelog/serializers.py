@@ -1,5 +1,6 @@
+from datetime import datetime
 from rest_framework import serializers
-from timelog.models import User, UserDefault, UserTimeSummary, TimeLogEntry, UserLiveStatus
+from timelog.models import User, UserDefault, UserTimeSummary, TimeLogEntry, UserLiveStatus, UserTimeRecord
 
 from timelog.core.base import convert_time_str_to_time_obj, get_time_delta
 
@@ -33,11 +34,9 @@ class UserDataSerializer(serializers.Serializer):
     email_id = serializers.EmailField()
     mandatory_break_time = serializers.IntegerField()
     mandatory_working_time_per_day = serializers.IntegerField()
-    net_working_hrs = serializers.IntegerField()
-    live_date = serializers.DateField(required=False)
-    live_time = serializers.TimeField(required=False)
+    net_working_time = serializers.IntegerField()
+    last_update = serializers.DateTimeField(required=False)
     live_state = serializers.IntegerField(required=False)
-    total_work_time = serializers.IntegerField(required=False)
 
     def create(self, validated_data):
         assert isinstance(
@@ -52,44 +51,72 @@ class UserDataSerializer(serializers.Serializer):
         mandatory_working_time_per_day = validated_data.get(
             "mandatory_working_time_per_day", 28800)
 
-        net_working_hrs = validated_data.get("net_working_hrs", 0)
+        net_working_time = validated_data.get("net_working_time", 0)
         User.objects_include_related.create(login_name, sap_id, first_name, last_name, email_id,
-                                            status, mandatory_break_time, mandatory_working_time_per_day, net_working_hrs)
+                                            status, mandatory_break_time, mandatory_working_time_per_day, net_working_time)
 
 
 class TimeLogEntrySerializer(serializers.Serializer):
     log_user = serializers.CharField()
     log_date = serializers.DateField()
-    log_time = serializers.TimeField()
-    log_type = serializers.IntegerField()
+    log_in_time = serializers.TimeField(required=False)
+    log_out_time = serializers.TimeField(required=False)
+    log_state = serializers.IntegerField()
 
     def create(self, validated_data):
         assert isinstance(
             validated_data, dict), "Invalid type for parameter 'data'"
         log_user = validated_data["log_user"]
         log_date = validated_data["log_date"]
-        log_time = validated_data["log_time"]
-        log_type = validated_data["log_type"]
+        log_in_time = validated_data.get("log_in_time", None)
+        log_out_time = validated_data.get("log_out_time", None)
+        log_state = validated_data["log_state"]
 
-        user = User.objects.get(login_name=log_user)
-        log_entry = TimeLogEntry.objects.create(
-            log_user=user, log_date=log_date, log_time=log_time, log_type=log_type)
+        user = User.objects_include_related.get(login_name=log_user)
 
-        log_entry.save()
-
-        # Update live_status based on punch_type
-        live_status = UserLiveStatus.objects.get(user=log_user)
-        if log_type == 0:
-            prev_log_in_time = live_status.time
-            log_time_obj = convert_time_str_to_time_obj(log_time)
-            interval = get_time_delta(log_time_obj, prev_log_in_time)
-            print("Work interval = %s - %s = %s" %
-                  (log_time, prev_log_in_time, interval))
-        elif log_type == 1:
-            interval = 0
+        todays_time_record = UserTimeRecord.objects.filter(
+            user=user, date=log_date)
+        if todays_time_record.count() == 0:
+            user_time_record = UserTimeRecord.objects.create(user=user, date=log_date, mandatory_work_time=user.mandatory_working_time_per_day,
+                                                             mandatory_break_time=user.mandatory_break_time, total_work_time_for_day=0)
         else:
-            raise ValueError("Invalid value encountered !")
-        live_status.time = log_time
-        live_status.state = log_type
-        live_status.total_work_time = live_status.total_work_time + interval
-        live_status.save()
+            assert todays_time_record.count(
+            ) == 1, "FATAL error! Multiple time records per day for user"
+            user_time_record = todays_time_record.get()
+
+        if user.userlivestatus.active_log == -1:
+            assert log_out_time == None, "Invalid data"
+            log_entry = TimeLogEntry.objects.create(
+                log_user=user, log_date=log_date, log_in_time=log_in_time, log_out_time=log_out_time, log_state=log_state)
+            log_entry.save()
+            log_time = log_in_time
+            user_time_record.log_entries.add(log_entry)
+            user_time_record.save()
+            live_state = 1
+            active_log_id = log_entry.pk
+        else:
+            log_entry = TimeLogEntry.objects.get(
+                pk=user.userlivestatus.active_log)
+            log_time = log_out_time
+            assert log_entry.log_state == 0, "LOG entry must be unsettled at this point"
+            assert log_in_time not in validated_data, "processing error"
+
+            time_interval = get_time_delta(
+                convert_time_str_to_time_obj(log_out_time), log_entry.log_in_time)
+
+            log_entry.log_out_time = log_out_time
+            log_entry.log_state = 1
+            log_entry.save()
+
+            # Update the total working time in the interval in user_time_record
+            user_time_record.total_work_time_for_day = user_time_record.total_work_time_for_day + time_interval
+            user_time_record.save()
+
+            live_state = 0
+            active_log_id = -1
+
+        # update live status
+        user.userlivestatus.live_state = live_state
+        user.userlivestatus.active_log = active_log_id
+        user.userlivestatus.last_update = datetime.now()
+        user.userlivestatus.save()

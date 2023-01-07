@@ -13,28 +13,24 @@ class UserCustomManager1(models.Manager):
             # Incase of unknown user
             raise User.DoesNotExist
         user_obj = user_details[0]
-        user_defaults = user_obj.userdefault_set.get()
-        user_summary = user_obj.usertimesummary_set.get()
+        user_defaults = user_obj.userdefault
+        user_summary = user_obj.usertimesummary
         user_live_status = user_obj.userlivestatus
 
         q_obj = user_details.annotate(
             mandatory_break_time=Coalesce(user_defaults.mandatory_break_time, 0))
         q_obj = q_obj.annotate(
             mandatory_working_time_per_day=Coalesce(user_defaults.mandatory_working_time_per_day, 0))
-        q_obj = q_obj.annotate(net_working_hrs=Coalesce(
-            user_summary.net_working_hrs, 0))
-        q_obj = q_obj.annotate(live_date=Coalesce(
-            user_live_status.date, date.today()))
-        q_obj = q_obj.annotate(live_time=Coalesce(
-            user_live_status.time, datetime.now().time()))
+        q_obj = q_obj.annotate(net_working_time=Coalesce(
+            user_summary.net_working_time, 0))
+        q_obj = q_obj.annotate(last_update=Coalesce(
+            user_live_status.last_update, datetime.now()))
         q_obj = q_obj.annotate(live_state=Coalesce(
-            user_live_status.state, 0))
-        q_obj = q_obj.annotate(total_work_time=Coalesce(
-            user_live_status.total_work_time, 0))
+            user_live_status.live_state, 0))
 
         return q_obj.get()
 
-    def create(self, login_name, sap_id, first_name, last_name, email_id, status, mandatory_break_time, mandatory_working_time_per_day, net_working_hrs):
+    def create(self, login_name, sap_id, first_name, last_name, email_id, status, mandatory_break_time, mandatory_working_time_per_day, net_working_time):
         # add user
         new_user = User.objects.create(
             login_name=login_name, sap_id=sap_id, first_name=first_name, last_name=last_name, email_id=email_id, status=status)
@@ -47,11 +43,11 @@ class UserCustomManager1(models.Manager):
 
         # add user summary fields
         new_user_time_summary = UserTimeSummary.objects.create(
-            user=new_user, net_working_hrs=net_working_hrs)
+            user=new_user, net_working_time=net_working_time)
 
         # add user live status fields
         user_live_status = UserLiveStatus.objects.create(
-            user=new_user, date=date.today(), time=datetime.now().time(), state=0, total_work_time=0)
+            user=new_user, last_update=datetime.now(), live_state=0)
 
         new_user_defaults.save()
         new_user_time_summary.save()
@@ -82,7 +78,7 @@ class User(models.Model):
 
 
 class UserDefault(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
     # normally 30 minutes per day == 1800 seconds
     mandatory_break_time = models.IntegerField()
     # normally 8hours == 28800 seconds
@@ -93,8 +89,8 @@ class UserDefault(models.Model):
 
 
 class UserTimeSummary(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
-    net_working_hrs = models.IntegerField()
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    net_working_time = models.IntegerField()
 
     def __str__(self):
         return "%s_summary" % (self.user, )
@@ -103,19 +99,31 @@ class UserTimeSummary(models.Model):
 class TimeLogEntry(models.Model):
     log_user = models.ForeignKey('User', on_delete=models.CASCADE)
     log_date = models.DateField()
-    log_time = models.TimeField()
-    log_type = models.IntegerField(choices=[(0, "punch_out"), (1, "punch_in")])
+    log_in_time = models.TimeField()
+    log_out_time = models.TimeField(null=True)
+    log_state = models.IntegerField(choices=[(0, "unsettled"), (1, "settled")])
 
     def __str__(self):
-        return "%s_%s_%s" % (self.log_date, self.log_user, self.log_type)
+        return "%s_%s_%s" % (self.log_date, self.log_user, self.log_state)
 
 
 class UserLiveStatus(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
-    state = models.IntegerField(choices=[(0, "out"), (1, "in")])
-    total_work_time = models.IntegerField()
+    last_update = models.DateTimeField()
+    live_state = models.IntegerField(choices=[(0, "out"), (1, "in")])
+    active_log = models.IntegerField(default=-1)
 
     def __str__(self):
         return "%s_livestatus" % (self.user, )
+
+
+class UserTimeRecord(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    date = models.DateField()
+    log_entries = models.ManyToManyField('TimeLogEntry', default=[])
+    mandatory_work_time = models.IntegerField()
+    mandatory_break_time = models.IntegerField()
+    total_work_time_for_day = models.IntegerField()
+
+    def __str__(self):
+        return "%s_%s" % (self.date, self.user)
