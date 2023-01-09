@@ -30,10 +30,10 @@ class UserCustomManager1(models.Manager):
 
         return q_obj.get()
 
-    def create(self, login_name, sap_id, first_name, last_name, email_id, status, mandatory_break_time, mandatory_working_time_per_day, net_working_time):
+    def create(self, login_name, sap_id, first_name, last_name, email_id, status, mandatory_break_time, mandatory_working_time_per_day, net_working_time, department_obj, team_obj):
         # add user
         new_user = User.objects.create(
-            login_name=login_name, sap_id=sap_id, first_name=first_name, last_name=last_name, email_id=email_id, status=status)
+            login_name=login_name, sap_id=sap_id, first_name=first_name, last_name=last_name, email_id=email_id, status=status, department=department_obj, team=team_obj)
 
         new_user.save()
 
@@ -72,6 +72,10 @@ class User(models.Model):
     email_id = models.EmailField(max_length=100)
     status = models.IntegerField(
         choices=[(0, "inactive"), (1, "active")], default=1)
+    department = models.ForeignKey(
+        'Department', on_delete=models.PROTECT, null=True)
+    team = models.ForeignKey(
+        'Team', on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.login_name
@@ -127,3 +131,40 @@ class UserTimeRecord(models.Model):
 
     def __str__(self):
         return "%s_%s" % (self.date, self.user)
+
+
+class Department(models.Model):
+    id = models.CharField(max_length=50, primary_key=True, unique=True)
+    teams = models.ManyToManyField('Team', default=[])
+    # This on_delete parameter is wrong. When the user is deleted, the department must not be deleted
+    incharge = models.ForeignKey(
+        'User', on_delete=models.PROTECT, related_name='hod')
+
+    def __str__(self):
+        return self.id
+
+
+class Team(models.Model):
+    id = models.CharField(max_length=50, primary_key=True, unique=True)
+    manager = models.ForeignKey(
+        'User', on_delete=models.PROTECT, related_name='incharge', null=True)
+    time_log_correction_approver = models.ForeignKey(
+        'User', on_delete=models.PROTECT, related_name='time_log_approver', null=True)
+
+    def __str__(self):
+        return self.id
+
+
+class TimeLogCorrectionRequest(models.Model):
+    requester = models.ForeignKey(
+        'User', on_delete=models.CASCADE, related_name='requested_by')
+    approver = models.ForeignKey(
+        'User', on_delete=models.PROTECT, related_name='tba_by')
+    entry_id = models.IntegerField()
+    entry_date = models.DateField()
+    entry_in_time = models.TimeField()
+    entry_out_time = models.TimeField()
+    approver_decision = models.IntegerField(
+        choices=[(-1, 'decision pending'), (0, 'rejected'), (1, 'approved')])
+    request_date = models.DateField()
+    decision_date = models.DateField(null=True)

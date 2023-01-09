@@ -22,3 +22,12 @@ def get_time_delta(time_a, time_b):
     total_diff_in_sec = total_seconds_a - total_seconds_b
 
     return total_diff_in_sec
+
+
+def get_time_entry_bounds_for_correction(predecesssor, current_log_in, current_log_out, successor):
+    login_left_limit = None if predecesssor == None else predecesssor.log_out_time
+    login_right_limit = None if current_log_out == None else current_log_out
+    logout_left_limit = current_log_in
+    logout_right_limit = None if successor == None else successor.log_in_time
+
+    return ((login_left_limit, login_right_limit), (logout_left_limit, logout_right_limit))

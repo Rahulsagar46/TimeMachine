@@ -1,8 +1,9 @@
 from datetime import datetime
 from rest_framework import serializers
 from timelog.models import User, UserDefault, UserTimeSummary, TimeLogEntry, UserLiveStatus, UserTimeRecord
+from timelog.models import Department, Team
 
-from timelog.core.base import convert_time_str_to_time_obj, get_time_delta
+from timelog.core.base import convert_time_str_to_time_obj, get_time_delta, get_time_entry_bounds_for_correction
 
 
 class UserDefaultSerializer(serializers.ModelSerializer):
@@ -32,6 +33,8 @@ class UserDataSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     email_id = serializers.EmailField()
+    department = serializers.CharField(required=False)
+    team = serializers.CharField(required=False)
     mandatory_break_time = serializers.IntegerField()
     mandatory_working_time_per_day = serializers.IntegerField()
     net_working_time = serializers.IntegerField()
@@ -47,16 +50,23 @@ class UserDataSerializer(serializers.Serializer):
         last_name = validated_data["last_name"]
         email_id = validated_data["email_id"]
         status = validated_data.get("status", 1)
+        department = validated_data.get("department", None)
+        team = validated_data.get("team", None)
         mandatory_break_time = validated_data.get("mandatory_break_time", 1800)
         mandatory_working_time_per_day = validated_data.get(
             "mandatory_working_time_per_day", 28800)
 
         net_working_time = validated_data.get("net_working_time", 0)
+        if department != None:
+            dept_obj = Department.objects.get(pk=department)
+        if team != None:
+            team_obj = Team.objects.get(pk=team)
         User.objects_include_related.create(login_name, sap_id, first_name, last_name, email_id,
-                                            status, mandatory_break_time, mandatory_working_time_per_day, net_working_time)
+                                            status, mandatory_break_time, mandatory_working_time_per_day, net_working_time, dept_obj, team_obj)
 
 
 class TimeLogEntrySerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     log_user = serializers.CharField()
     log_date = serializers.DateField()
     log_in_time = serializers.TimeField(required=False)
@@ -120,3 +130,91 @@ class TimeLogEntrySerializer(serializers.Serializer):
         user.userlivestatus.active_log = active_log_id
         user.userlivestatus.last_update = datetime.now()
         user.userlivestatus.save()
+
+
+class TeamSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    manager = serializers.CharField(required=False)
+    time_log_correction_approver = serializers.CharField(required=False)
+
+    def create(self, validated_data):
+        id = validated_data["id"]
+        manager = validated_data.get("manager", None)
+        time_log_correction_approver = validated_data.get(
+            "time_log_correction_approver", None)
+        team = Team.objects.create(
+            id=id, manager=manager, time_log_correction_approver=time_log_correction_approver)
+
+        team.save()
+
+
+class TimeLogCorrectionRequestSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
+    requester = serializers.CharField()
+    approver = serializers.CharField(required=False)
+    entry_id = serializers.IntegerField()
+    entry_date = serializers.DateField()
+    entry_in_time = serializers.TimeField()
+    entry_out_time = serializers.TimeField()
+    approver_decision = serializers.IntegerField()
+    request_date = serializers.DateField()
+    decision_date = serializers.DateField(required=False)
+
+    def _check_correction_request_validity(self, requester, entry_date, entry_id):
+        time_logs = TimeLogEntry.objects.filter(
+            log_user=requester, log_date=entry_date)
+
+        total_entries = time_logs.count()
+        for i in range(0, total_entries):
+            if time_logs[i].id != entry_id:
+                continue
+            hit_index = i
+            break
+
+        if total_entries == 1:
+            predecessor = None
+            successor = None
+        elif total_entries == 0:
+            raise AssertionError("This situation should never occur")
+        elif total_entries > 1:
+            if hit_index == 0:
+                predecessor = None
+                successor = time_logs[hit_index + 1]
+            elif hit_index == total_entries - 1:
+                predecessor = time_logs[hit_index - 1]
+                successor = None
+            else:
+                predecessor = time_logs[hit_index - 1]
+                successor = time_logs[hit_index + 1]
+        else:
+            raise AssertionError("This situation should never occur")
+
+        (login_time_bounds, logout_time_bounds) = get_time_entry_bounds_for_correction(
+            predecessor, time_logs[hit_index].log_in_time, time_logs[hit_index].log_out_time, successor)
+
+        print("hit_index:", hit_index)
+        print("%s << login_time << %s" %
+              (login_time_bounds[0], login_time_bounds[1]))
+        print("%s << logout_time << %s" %
+              (logout_time_bounds[0], logout_time_bounds[1]))
+
+    def create(self, validated_data):
+        requester = validated_data['requester']
+        approver = validated_data.get('approver', None)
+        entry_id = validated_data['entry_id']
+        entry_date = validated_data['entry_date']
+        entry_in_time = validated_data['entry_in_time']
+        entry_out_time = validated_data['entry_out_time']
+        approver_decision = validated_data.get('approver_decision', -1)
+        request_date = validated_data['request_date']
+        decision_date = validated_data.get('decision_date', None)
+
+        req_obj = User.objects.get(pk=requester)
+        # approv_obj = User.objects.get(pk=approver)
+        approv_obj = req_obj.team.time_log_correction_approver
+        print(approv_obj)
+        is_valid = self._check_correction_request_validity(
+            requester, entry_date, entry_id)
+
+    def update(self, instance, validated_data):
+        pass

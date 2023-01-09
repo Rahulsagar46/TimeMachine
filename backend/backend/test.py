@@ -15,10 +15,10 @@ log_time = datetime_now.strftime("%H:%M:%S")
 
 def add_time_log_entry():
     time_log_entry = {
-        "log_user": "jpduggineni",
+        "log_user": "rvoduru",
         "log_date": log_date,
-        "log_in_time": log_time,
-        # "log_out_time": log_time,
+        # "log_in_time": log_time,
+        "log_out_time": log_time,
         "log_state": 0
     }
     r = requests.post("http://127.0.0.1:8000/punch/",
@@ -29,11 +29,13 @@ def add_time_log_entry():
 
 def add_test_users():
     user_data = {
-        "login_name": "jpduggineni",
+        "login_name": "jpdugg",
         "sap_id": "700101",
-        "first_name": "Jayaprakash",
-        "last_name": "Duggineni",
-        "email_id": "jpd@gmail.com",
+        "first_name": "Jaya",
+        "last_name": "Duggi",
+        "email_id": "jp@gmail.com",
+        "department": "PD",
+        "team": "PSG",
         "mandatory_break_time": 1800,
         "mandatory_working_time_per_day": 28800,
         "net_working_time": 21600
@@ -43,7 +45,35 @@ def add_test_users():
     print(r.json)
 
 
+def add_new_team():
+    team_info = {
+        "id": "PSG"
+    }
+    r = requests.post("http://127.0.0.1:8000/newteam/",
+                      json=team_info, headers=headers)
+    print(r.json)
+
+
+def edit_time_log():
+    time_log_corrected = {
+        "requester": "jpdugg",
+        "entry_id": 2,
+        "entry_date": "2023-01-09",
+        "entry_in_time": "13:05:32",
+        "entry_out_time": "15:46:23",
+        "approver_decision": -1,
+        "request_date": "2023-01-09"
+
+    }
+    r = requests.post("http://127.0.0.1:8000/editlog/",
+                      json=time_log_corrected, headers=headers)
+
+    print(r.json)
+
+
 if __name__ == "__main__":
+    # edit_time_log()
     # add_time_log_entry()
     # add_test_users()
+    # add_new_team()
     pass
