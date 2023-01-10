@@ -169,3 +169,6 @@ class TimeLogCorrectionRequest(models.Model):
         choices=[(-1, 'decision pending'), (0, 'rejected'), (1, 'approved')])
     request_date = models.DateField()
     decision_date = models.DateField(null=True)
+
+    def __str__(self):
+        return "%s_%s_%s_%s" % (self.request_date, self.requester, self.approver, self.approver_decision)
