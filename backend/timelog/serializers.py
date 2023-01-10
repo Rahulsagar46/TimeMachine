@@ -1,9 +1,9 @@
 from datetime import datetime
 from rest_framework import serializers
-from timelog.models import User, UserDefault, UserTimeSummary, TimeLogEntry, UserLiveStatus, UserTimeRecord
-from timelog.models import Department, Team
+from timelog.models import User, UserDefault, UserTimeSummary, TimeLogEntry, UserTimeRecord
+from timelog.models import Department, Team, TimeLogCorrectionRequest
 
-from timelog.core.base import convert_time_str_to_time_obj, get_time_delta, get_time_entry_bounds_for_correction
+from timelog.core.base import get_time_delta, get_time_entry_bounds_for_correction, is_time_within_bounds
 
 
 class UserDefaultSerializer(serializers.ModelSerializer):
@@ -111,8 +111,7 @@ class TimeLogEntrySerializer(serializers.Serializer):
             assert log_entry.log_state == 0, "LOG entry must be unsettled at this point"
             assert log_in_time not in validated_data, "processing error"
 
-            time_interval = get_time_delta(
-                convert_time_str_to_time_obj(log_out_time), log_entry.log_in_time)
+            time_interval = get_time_delta(log_out_time, log_entry.log_in_time)
 
             log_entry.log_out_time = log_out_time
             log_entry.log_state = 1
@@ -160,7 +159,7 @@ class TimeLogCorrectionRequestSerializer(serializers.Serializer):
     request_date = serializers.DateField()
     decision_date = serializers.DateField(required=False)
 
-    def _check_correction_request_validity(self, requester, entry_date, entry_id):
+    def _check_correction_request_validity(self, requester, entry_date, entry_id, entry_in_time, entry_out_time):
         time_logs = TimeLogEntry.objects.filter(
             log_user=requester, log_date=entry_date)
 
@@ -190,13 +189,15 @@ class TimeLogCorrectionRequestSerializer(serializers.Serializer):
             raise AssertionError("This situation should never occur")
 
         (login_time_bounds, logout_time_bounds) = get_time_entry_bounds_for_correction(
-            predecessor, time_logs[hit_index].log_in_time, time_logs[hit_index].log_out_time, successor)
+            predecessor, entry_in_time, entry_out_time, successor)
+        in_time_in_bound = is_time_within_bounds(
+            login_time_bounds[0], entry_in_time, login_time_bounds[1])
+        out_time_in_bound = is_time_within_bounds(
+            logout_time_bounds[0], entry_out_time, logout_time_bounds[1])
 
-        print("hit_index:", hit_index)
-        print("%s << login_time << %s" %
-              (login_time_bounds[0], login_time_bounds[1]))
-        print("%s << logout_time << %s" %
-              (logout_time_bounds[0], logout_time_bounds[1]))
+        if (in_time_in_bound and out_time_in_bound):
+            return True
+        return False
 
     def create(self, validated_data):
         requester = validated_data['requester']
@@ -210,11 +211,21 @@ class TimeLogCorrectionRequestSerializer(serializers.Serializer):
         decision_date = validated_data.get('decision_date', None)
 
         req_obj = User.objects.get(pk=requester)
-        # approv_obj = User.objects.get(pk=approver)
         approv_obj = req_obj.team.time_log_correction_approver
-        print(approv_obj)
         is_valid = self._check_correction_request_validity(
-            requester, entry_date, entry_id)
+            requester, entry_date, entry_id, entry_in_time, entry_out_time)
+        # print("time_entry_correction_valid: %s" % (is_valid, ))
+        if is_valid:
+            correction_obj = TimeLogCorrectionRequest.objects.create(
+                requester=req_obj, approver=approv_obj, entry_id=entry_id, entry_date=entry_date, entry_in_time=entry_in_time, entry_out_time=entry_out_time, approver_decision=approver_decision, request_date=request_date, decision_date=decision_date)
+
+            return (True, correction_obj)
+        return (False, None)
 
     def update(self, instance, validated_data):
-        pass
+        instance.approver_decision = validated_data['approver_decision']
+        instance.decision_date = validated_data['decision_date']
+
+        instance.save()
+
+        return instance

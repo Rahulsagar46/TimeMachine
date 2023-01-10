@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from timelog.core.time_logging_funcs import record_time_entry, get_all_time_entries, request_log_entry_correction
+from timelog.core.time_logging_funcs import record_time_entry, get_all_time_entries, request_log_entry_correction, get_all_open_correction_requests, decide_log_entry_correction
 from timelog.core.user_management_funcs import list_all_users, get_initial_user_details, create_new_user_with_relevant_data
 from timelog.core.team_management_funcs import create_new_team
 
@@ -25,6 +25,12 @@ def load_initial_values(request, user_login):
 def get_log_entries(request, user_login, date):
     log_entries = get_all_time_entries(user_login, date)
     return JsonResponse(log_entries, safe=False)
+
+
+@api_view(['GET'])
+def get_open_correction_requests(request, approver_name):
+    correction_requests = get_all_open_correction_requests(approver_name)
+    return JsonResponse(correction_requests, safe=False)
 
 
 # time entry functions
@@ -67,6 +73,15 @@ def add_new_team(request):
 @csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
 def edit_log_entry(request):
     (success, return_data) = request_log_entry_correction(request.data)
+    if success:
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
+def decide_correction_entry(request):
+    (success, return_data) = decide_log_entry_correction(request.data)
     if success:
         return Response(status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_400_BAD_REQUEST)

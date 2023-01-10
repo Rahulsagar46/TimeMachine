@@ -56,17 +56,31 @@ def add_new_team():
 
 def edit_time_log():
     time_log_corrected = {
-        "requester": "jpdugg",
-        "entry_id": 2,
+        "requester": "rvoduru",
+        "entry_id": 1,
         "entry_date": "2023-01-09",
-        "entry_in_time": "13:05:32",
-        "entry_out_time": "15:46:23",
+        "entry_in_time": "13:56:32",
+        "entry_out_time": "15:54:23",
         "approver_decision": -1,
-        "request_date": "2023-01-09"
+        "request_date": "2023-01-10"
 
     }
     r = requests.post("http://127.0.0.1:8000/editlog/",
                       json=time_log_corrected, headers=headers)
+
+    print(r.json)
+
+
+def decide_correction():
+    decision_dict = {
+        "approver": "mwendl",
+        "id": 1,
+        "entry_id": 1,
+        "approver_decision": 1,
+        "decision_date": "2023-01-10"
+    }
+    r = requests.post("http://127.0.0.1:8000/decide/",
+                      json=decision_dict, headers=headers)
 
     print(r.json)
 
@@ -76,4 +90,5 @@ if __name__ == "__main__":
     # add_time_log_entry()
     # add_test_users()
     # add_new_team()
+    # decide_correction()
     pass
