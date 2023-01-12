@@ -72,6 +72,7 @@ class TimeLogEntrySerializer(serializers.Serializer):
     log_in_time = serializers.TimeField(required=False)
     log_out_time = serializers.TimeField(required=False)
     log_state = serializers.IntegerField()
+    interval_time = serializers.IntegerField()
 
     def create(self, validated_data):
         assert isinstance(
@@ -115,6 +116,7 @@ class TimeLogEntrySerializer(serializers.Serializer):
 
             log_entry.log_out_time = log_out_time
             log_entry.log_state = 1
+            log_entry.interval_time = time_interval
             log_entry.save()
 
             # Update the total working time in the interval in user_time_record

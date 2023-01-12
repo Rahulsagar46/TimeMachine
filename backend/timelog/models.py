@@ -107,6 +107,7 @@ class TimeLogEntry(models.Model):
     log_out_time = models.TimeField(null=True)
     log_state = models.IntegerField(
         choices=[(0, "unsettled"), (1, "settled"), (2, "approval pending")])
+    interval_time = models.IntegerField(default=0)
 
     def __str__(self):
         return "%s_%s_%s" % (self.log_date, self.log_user, self.log_state)
