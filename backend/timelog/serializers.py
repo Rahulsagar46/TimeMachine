@@ -72,7 +72,7 @@ class TimeLogEntrySerializer(serializers.Serializer):
     log_in_time = serializers.TimeField(required=False)
     log_out_time = serializers.TimeField(required=False)
     log_state = serializers.IntegerField()
-    interval_time = serializers.IntegerField()
+    interval_time = serializers.IntegerField(required=False)
 
     def create(self, validated_data):
         assert isinstance(
