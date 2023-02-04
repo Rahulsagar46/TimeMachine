@@ -43,3 +43,50 @@
     transform: rotate(360deg);
   }
 }
+
+/* custom css here */
+
+.HeaderContainer{
+  width: 100vw;
+  height: 10vmin;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: rgba(50, 83, 220, 2);
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  color: white;
+}
+
+.Item {
+  flex: 0;
+  align-self: center;
+}
+
+.Qlogo{
+  width: 150px;
+  height: 50px;
+  padding-left: 5%;
+}
+
+.Item3{
+  padding-right: 2%;
+}
+
+.CheekletContainer{
+  width: 100vw;
+  height: 25vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.Cheeklet{
+  flex: 1;
+  border-width: 0.5ch;
+  border-color:white;
+  border-style:double;
+  background-color: rgba(50, 83, 220, 2);
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  color: white;
+}

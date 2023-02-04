@@ -6,8 +6,10 @@ const Header = (props) => {
     const sap_id = props['initialinfo']['sap_id']; 
     return (
         <div>
-            <div className="Header">
-                <p>Hello {login_name}</p>
+            <div className="HeaderContainer">
+            <div className="Item Item2"><img className="Qlogo" src='qcom_logo.png' alt='logo'/></div>
+                <div className="Item Item2">ID:{sap_id}</div>
+                <div className="Item Item3">Hello {login_name}</div>
             </div>
         </div>
     );
