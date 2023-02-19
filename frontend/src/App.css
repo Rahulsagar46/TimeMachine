@@ -86,7 +86,61 @@
   border-color:white;
   border-style:double;
   background-color: rgba(50, 83, 220, 2);
+}
+
+.CheekletHeader{
+  font-size: 1.2em;
+  font-weight: bold;
+  color: rgba(50, 83, 220, 2);
+  background-color: white;
+  border-color:white;
+  width: 100%;
+  height: 30%;
+  text-align: center;
+  padding-top: 3%;
+}
+
+.TimeVal{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 5em;
+  font-weight: normal;
+  color: white;
+}
+
+.TabContainer{
+  width: 100vw;
+  height: 50vmin;
+  display: flex;
+  flex-direction: column;
+}
+
+.TabNav{
+  width: 100vw;
+  height: 5vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.TabActive{
+  flex: 1;
+  border-width: 0.2ch;
+  border-color:rgba(50, 83, 220, 2);
+  border-style:double;
+  background-color: white;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  color: rgba(50, 83, 220, 2);
+  cursor:pointer;
+}
+
+.TabInactive{
+  flex: 1;
+  border-width: 0.2ch;
+  border-color:white;
+  border-style:double;
+  background-color: rgba(50, 83, 220, 2);
   font-family:Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bold;
   color: white;
+  cursor:pointer;
 }

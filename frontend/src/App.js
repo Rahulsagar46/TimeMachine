@@ -1,8 +1,8 @@
 import React , { useEffect, useState } from 'react';
 import './App.css';
-import Header from './Header';
-import PunchRegion from './timelogging/PunchRegion';
-import CheekletBar from './CheekletBar';
+import Header from './components/global/Header';
+import CheekletBar from './components/global/CheekletBar';
+import ContentContainer from './components/global/ContentContainer';
 import axios from 'axios';
 
 const url = 'http://127.0.0.1:8000/rvoduru';
@@ -27,7 +27,7 @@ function App() {
     <div className="App">
       <Header initialinfo={initialinfo}/>
       <CheekletBar />
-      <PunchRegion login_name={initialinfo['login_name']} livestate={initialinfo['live_state']} setInfo={setInitialinfo}/>
+      <ContentContainer initialinfo={initialinfo} setInitialinfo={setInitialinfo}/>
     </div>
   );
 }
