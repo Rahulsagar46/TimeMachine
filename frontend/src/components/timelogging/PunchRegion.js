@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from '@mui/material';
 import axios from 'axios';
 
 const punch_url = 'http://127.0.0.1:8000/punch/';
@@ -50,9 +51,9 @@ const PunchRegion = ({login_name, livestate, setInfo}) => {
         })}).catch(err => console.log(err))
     }
     return (
-        <div>
-               <button disabled={is_user_in} onClick={recordPunchin}>Punch-In</button>
-               <button disabled={!is_user_in} onClick={recordPunchout}>Punch-Out</button>
+        <div className='ButtonContainer'>
+               <Button variant='contained' disabled={is_user_in} onClick={recordPunchin} className='PunchButton'>Punch-In</Button>
+               <Button variant='contained' disabled={!is_user_in} onClick={recordPunchout} className='PunchButton'>Punch-Out</Button>
         </div>
     );
 }

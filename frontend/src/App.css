@@ -109,7 +109,7 @@
 
 .TabContainer{
   width: 100vw;
-  height: 50vmin;
+  height: 65vmin;
   display: flex;
   flex-direction: column;
 }
@@ -126,7 +126,7 @@
   border-width: 0.2ch;
   border-color:rgba(50, 83, 220, 2);
   border-style:double;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.601);
   font-family:Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bold;
   color: rgba(50, 83, 220, 2);
@@ -141,6 +141,86 @@
   background-color: rgba(50, 83, 220, 2);
   font-family:Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bold;
+  color: rgba(255, 255, 255, 0.82);
+  cursor:pointer;
+}
+
+.Statusmsg{
+  color: red
+}
+
+.ButtonContainer{
+  width: 20vw;
+  height: 5vmin;
+  display: flex;
+  flex-direction: row;
+  padding-left: 5vmin;
+}
+
+.PunchButton{
+  flex: 1
+}
+
+.TimeLoggingMainContainer{
+  width: 100vw;
+  height: 60vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.TimeLoggingSideNavContainer{
+  width: 20vw;
+  height: 15vmin;
+  display: flex;
+  flex-direction: column;
+}
+
+.SideTabActive{
+  flex: 1;
+  border-width: 0.2ch;
+  border-color:rgba(50, 83, 220, 2);
+  border-style:double;
+  background-color: white;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  color: rgba(50, 83, 220, 2);
+  cursor:pointer;
+  text-align: left;
+  padding-top: 5%;
+}
+
+.SideTabInactive{
+  flex: 1;
+  border-width: 0.2ch;
+  border-color:white;
+  border-style:double;
+  background-color: rgba(50, 83, 220, 2); 
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
   color: white;
   cursor:pointer;
+  text-align: left;
+  padding-top: 5%;
+}
+
+.Subsection{
+  width: 80vw;
+  height: 60vmin;
+  display: flex;
+  flex-direction: column;
+}
+
+.Subsection1{
+  width: 25vw;
+  height: 15vmin;
+  display: flex;
+  flex-direction: column;
+  margin-left: 30vmin;
+}
+
+.TodaysLog{
+  width: 30vw;
+  height: 30vmin;
+  margin-left: 5vmin;
+  margin-top: 5vmin;
 }
