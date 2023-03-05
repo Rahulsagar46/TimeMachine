@@ -3,11 +3,10 @@ import { useState } from 'react'
 import TabNav from './TabNav'
 import TimeLoggingContainer from '../timelogging/TimeLoggingContainer'
 
-const ContentContainer = ({initialinfo, setInitialinfo }) => {
+const ContentContainer = ({initialinfo, setInitialinfo}) => {
     const [activeTab, setActiveTab] = useState("timeLoggingTab")
     const getComponentForActiveTab = () => {
         if (activeTab === "timeLoggingTab"){
-            // return (<PunchRegion login_name={initialinfo['login_name']} livestate={initialinfo['live_state']} setInfo={setInitialinfo}/>);
             return (<TimeLoggingContainer initialinfo={initialinfo} setInitialinfo={setInitialinfo}/>)
         }
         if (activeTab === "vacationManagementTab"){

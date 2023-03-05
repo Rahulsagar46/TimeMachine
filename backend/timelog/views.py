@@ -7,8 +7,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from timelog.core.time_logging_funcs import record_time_entry, get_all_time_entries, request_log_entry_correction, get_all_open_correction_requests, decide_log_entry_correction
+from timelog.core.time_logging_funcs import get_all_time_entries_for_the_month
 from timelog.core.user_management_funcs import list_all_users, get_initial_user_details, create_new_user_with_relevant_data
-from timelog.core.team_management_funcs import create_new_team
+from timelog.core.team_management_funcs import create_new_team, create_new_department
 
 # initial loading parameters
 
@@ -16,6 +17,8 @@ from timelog.core.team_management_funcs import create_new_team
 @api_view(['GET'])
 def load_initial_values(request, user_login):
     (success, user_details) = get_initial_user_details(user_login)
+    log_entries = get_all_time_entries_for_the_month(user_login)
+    user_details["log_entries"] = log_entries
     if success:
         return Response(user_details)
     return Response(status=status.HTTP_404_NOT_FOUND)
@@ -64,6 +67,15 @@ def get_list_of_users(request):
 @csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
 def add_new_team(request):
     (success, return_data) = create_new_team(request.data)
+    if success:
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
+def add_new_department(request):
+    (success, return_data) = create_new_department(request.data)
     if success:
         return Response(status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_400_BAD_REQUEST)

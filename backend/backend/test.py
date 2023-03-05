@@ -7,7 +7,6 @@ headers = {
     'Content-Type': 'application/json'
 }
 
-
 datetime_now = datetime.now()
 log_date = datetime_now.strftime("%Y-%m-%d")
 log_time = datetime_now.strftime("%H:%M:%S")
@@ -17,7 +16,7 @@ def add_time_log_entry():
     time_log_entry = {
         "log_user": "rvoduru",
         "log_date": log_date,
-        # "log_in_time": log_time,
+        "log_in_time": log_time,
         "log_out_time": log_time,
         "log_state": 0
     }
@@ -29,11 +28,11 @@ def add_time_log_entry():
 
 def add_test_users():
     user_data = {
-        "login_name": "jpdugg",
+        "login_name": "rvoduru",
         "sap_id": "700101",
-        "first_name": "Jaya",
-        "last_name": "Duggi",
-        "email_id": "jp@gmail.com",
+        "first_name": "Rahul",
+        "last_name": "Voduru",
+        "email_id": "rvoduru@gmail.com",
         "department": "PD",
         "team": "PSG",
         "mandatory_break_time": 1800,
@@ -45,9 +44,19 @@ def add_test_users():
     print(r.json)
 
 
+def add_new_dept():
+    dept_info = {
+        "id": "PD",
+    }
+    r = requests.post("http://127.0.0.1:8000/newdepartment/",
+                      json=dept_info, headers=headers)
+    print(r.json)
+
+
 def add_new_team():
     team_info = {
-        "id": "PSG"
+        "id": "PSG",
+        "department": "PD"
     }
     r = requests.post("http://127.0.0.1:8000/newteam/",
                       json=team_info, headers=headers)
@@ -88,7 +97,8 @@ def decide_correction():
 if __name__ == "__main__":
     # edit_time_log()
     # add_time_log_entry()
-    # add_test_users()
-    # add_new_team()
+    add_new_dept()
+    add_new_team()
+    add_test_users()
     # decide_correction()
     pass

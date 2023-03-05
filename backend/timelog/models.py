@@ -102,6 +102,9 @@ class UserTimeSummary(models.Model):
 
 class TimeLogEntry(models.Model):
     log_user = models.ForeignKey('User', on_delete=models.CASCADE)
+    log_year = models.IntegerField()
+    log_month = models.IntegerField()
+    log_day = models.IntegerField()
     log_date = models.DateField()
     log_in_time = models.TimeField()
     log_out_time = models.TimeField(null=True)
@@ -125,7 +128,11 @@ class UserLiveStatus(models.Model):
 
 class UserTimeRecord(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    day = models.IntegerField()
     date = models.DateField()
+    week_day = models.CharField(max_length=15)
     log_entries = models.ManyToManyField('TimeLogEntry', default=[])
     mandatory_work_time = models.IntegerField()
     mandatory_break_time = models.IntegerField()
@@ -137,10 +144,10 @@ class UserTimeRecord(models.Model):
 
 class Department(models.Model):
     id = models.CharField(max_length=50, primary_key=True, unique=True)
-    teams = models.ManyToManyField('Team', default=[])
+    # teams = models.ManyToManyField('Team', default=[])
     # This on_delete parameter is wrong. When the user is deleted, the department must not be deleted
     incharge = models.ForeignKey(
-        'User', on_delete=models.PROTECT, related_name='hod')
+        'User', on_delete=models.PROTECT, related_name='hod', null=True)
 
     def __str__(self):
         return self.id
@@ -148,6 +155,8 @@ class Department(models.Model):
 
 class Team(models.Model):
     id = models.CharField(max_length=50, primary_key=True, unique=True)
+    department = models.ForeignKey(
+        'Department', on_delete=models.PROTECT, related_name='subteam', null=True)
     manager = models.ForeignKey(
         'User', on_delete=models.PROTECT, related_name='incharge', null=True)
     time_log_correction_approver = models.ForeignKey(

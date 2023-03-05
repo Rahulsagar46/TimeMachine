@@ -168,41 +168,6 @@
   flex-direction: row;
 }
 
-.TimeLoggingSideNavContainer{
-  width: 20vw;
-  height: 15vmin;
-  display: flex;
-  flex-direction: column;
-}
-
-.SideTabActive{
-  flex: 1;
-  border-width: 0.2ch;
-  border-color:rgba(50, 83, 220, 2);
-  border-style:double;
-  background-color: white;
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: bold;
-  color: rgba(50, 83, 220, 2);
-  cursor:pointer;
-  text-align: left;
-  padding-top: 5%;
-}
-
-.SideTabInactive{
-  flex: 1;
-  border-width: 0.2ch;
-  border-color:white;
-  border-style:double;
-  background-color: rgba(50, 83, 220, 2); 
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: bold;
-  color: white;
-  cursor:pointer;
-  text-align: left;
-  padding-top: 5%;
-}
-
 .Subsection{
   width: 80vw;
   height: 60vmin;
@@ -215,12 +180,18 @@
   height: 15vmin;
   display: flex;
   flex-direction: column;
-  margin-left: 30vmin;
+  margin-left: 10vmin;
+}
+
+.LeftSubcomponent{
+  width: 40vw;
+  height: 50vmin;
+  margin-top: 5vmin;
 }
 
 .TodaysLog{
-  width: 30vw;
-  height: 30vmin;
+  width: 32vw;
+  height: 40vmin;
   margin-left: 5vmin;
   margin-top: 5vmin;
 }

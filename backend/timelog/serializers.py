@@ -3,7 +3,7 @@ from rest_framework import serializers
 from timelog.models import User, UserDefault, UserTimeSummary, TimeLogEntry, UserTimeRecord
 from timelog.models import Department, Team, TimeLogCorrectionRequest
 
-from timelog.core.base import get_time_delta, get_time_entry_bounds_for_correction, is_time_within_bounds
+from timelog.core.base import get_time_delta, get_time_entry_bounds_for_correction, is_time_within_bounds, get_day_from_number
 
 
 class UserDefaultSerializer(serializers.ModelSerializer):
@@ -68,6 +68,9 @@ class UserDataSerializer(serializers.Serializer):
 class TimeLogEntrySerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     log_user = serializers.CharField()
+    log_year = serializers.IntegerField()
+    log_month = serializers.IntegerField()
+    log_day = serializers.IntegerField()
     log_date = serializers.DateField()
     log_in_time = serializers.TimeField(required=False)
     log_out_time = serializers.TimeField(required=False)
@@ -78,6 +81,9 @@ class TimeLogEntrySerializer(serializers.Serializer):
         assert isinstance(
             validated_data, dict), "Invalid type for parameter 'data'"
         log_user = validated_data["log_user"]
+        log_year = validated_data["log_year"]
+        log_month = validated_data["log_month"]
+        log_day = validated_data["log_day"]
         log_date = validated_data["log_date"]
         log_in_time = validated_data.get("log_in_time", None)
         log_out_time = validated_data.get("log_out_time", None)
@@ -85,10 +91,13 @@ class TimeLogEntrySerializer(serializers.Serializer):
 
         user = User.objects_include_related.get(login_name=log_user)
 
+        week_day_number = datetime.strptime(log_date, '%Y-%m-%d').weekday()
+        week_day = get_day_from_number(week_day_number)
+
         todays_time_record = UserTimeRecord.objects.filter(
             user=user, date=log_date)
         if todays_time_record.count() == 0:
-            user_time_record = UserTimeRecord.objects.create(user=user, date=log_date, mandatory_work_time=user.mandatory_working_time_per_day,
+            user_time_record = UserTimeRecord.objects.create(user=user, year=log_year, month=log_month, day=log_day, week_day=week_day, date=log_date, mandatory_work_time=user.mandatory_working_time_per_day,
                                                              mandatory_break_time=user.mandatory_break_time, total_work_time_for_day=0)
         else:
             assert todays_time_record.count(
@@ -98,7 +107,7 @@ class TimeLogEntrySerializer(serializers.Serializer):
         if user.userlivestatus.active_log == -1:
             assert log_out_time == None, "Invalid data"
             log_entry = TimeLogEntry.objects.create(
-                log_user=user, log_date=log_date, log_in_time=log_in_time, log_out_time=log_out_time, log_state=log_state)
+                log_user=user, log_year=log_year, log_month=log_month, log_day=log_day, log_date=log_date, log_in_time=log_in_time, log_out_time=log_out_time, log_state=log_state)
             log_entry.save()
             log_time = log_in_time
             user_time_record.log_entries.add(log_entry)
@@ -133,20 +142,48 @@ class TimeLogEntrySerializer(serializers.Serializer):
         user.userlivestatus.save()
 
 
+class UserTimeRecordSerializer(serializers.Serializer):
+    user = serializers.CharField()
+    year = serializers.IntegerField()
+    month = serializers.IntegerField()
+    day = serializers.IntegerField()
+    date = serializers.DateField()
+    week_day = serializers.CharField()
+    log_entries = TimeLogEntrySerializer(many=True)
+    mandatory_work_time = serializers.IntegerField()
+    mandatory_break_time = serializers.IntegerField()
+    total_work_time_for_day = serializers.IntegerField()
+
+
 class TeamSerializer(serializers.Serializer):
     id = serializers.CharField()
+    department = serializers.CharField()
     manager = serializers.CharField(required=False)
     time_log_correction_approver = serializers.CharField(required=False)
 
     def create(self, validated_data):
         id = validated_data["id"]
+        department = validated_data["department"]
         manager = validated_data.get("manager", None)
         time_log_correction_approver = validated_data.get(
             "time_log_correction_approver", None)
+        dept_obj = Department.objects.get(pk=department)
         team = Team.objects.create(
-            id=id, manager=manager, time_log_correction_approver=time_log_correction_approver)
+            id=id, department=dept_obj, manager=manager, time_log_correction_approver=time_log_correction_approver)
 
         team.save()
+
+
+class DepartmentSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    incharge = serializers.CharField(required=False)
+
+    def create(self, validated_data):
+        id = validated_data["id"]
+        incharge = validated_data.get("manager", None)
+        dept = Department.objects.create(id=id, incharge=incharge)
+
+        dept.save()
 
 
 class TimeLogCorrectionRequestSerializer(serializers.Serializer):
@@ -216,7 +253,6 @@ class TimeLogCorrectionRequestSerializer(serializers.Serializer):
         approv_obj = req_obj.team.time_log_correction_approver
         is_valid = self._check_correction_request_validity(
             requester, entry_date, entry_id, entry_in_time, entry_out_time)
-        # print("time_entry_correction_valid: %s" % (is_valid, ))
         if is_valid:
             correction_obj = TimeLogCorrectionRequest.objects.create(
                 requester=req_obj, approver=approv_obj, entry_id=entry_id, entry_date=entry_date, entry_in_time=entry_in_time, entry_out_time=entry_out_time, approver_decision=approver_decision, request_date=request_date, decision_date=decision_date)

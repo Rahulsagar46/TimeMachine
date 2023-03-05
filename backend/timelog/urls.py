@@ -3,6 +3,7 @@ from timelog.views import log_time_entry
 from timelog.views import load_initial_values
 from timelog.views import add_new_user
 from timelog.views import add_new_team
+from timelog.views import add_new_department
 from timelog.views import get_log_entries
 from timelog.views import edit_log_entry
 from timelog.views import get_open_correction_requests
@@ -17,6 +18,7 @@ urlpatterns = [
     # POST requests
     path('add/', add_new_user),
     path('newteam/', add_new_team),
+    path('newdepartment/', add_new_department),
     path('punch/', log_time_entry),
     path('editlog/', edit_log_entry),
     path('decide/', decide_correction_entry)

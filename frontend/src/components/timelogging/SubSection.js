@@ -4,28 +4,36 @@ import { DataGrid } from '@mui/x-data-grid';
 
 const SubSection = ({ initialinfo, setInitialinfo }) => {   
     const columns = [
-        { field: 'col1', headerName: 'Punch in', width: 120 },
-        { field: 'col2', headerName: 'Punch out', width: 120 },
-        { field: 'col3', headerName: 'Duration(hrs)', width: 120},
-        { field: 'col4', headerName: 'Status', width: 120},
+        { field: 'col1', headerName: 'Punch in', width: 110 },
+        { field: 'col2', headerName: 'Punch out', width: 110 },
+        { field: 'col3', headerName: 'Duration(hrs)', width: 110},
+        { field: 'col4', headerName: 'Status', width: 110},
       ];
-
-      const rows = [
-        { id: 1, col1: '12:50:01', col2: '13:50:01', col3:'1', col4: 'settled'},
-        { id: 2, col1: '14:20:01', col2: '14:50:01', col3:'0.5', col4: 'settled'},
-        { id: 3, col1: '15:10:08', col2: '15:30:10', col3:'0.25', col4:'settled' },
-        { id: 4, col1: '16:10:08', col2: '', col3:'', col4:'unsettled' }
-      ];
+    
+    const condition1 = initialinfo["log_entries"] !== undefined
+    var condition2 = true
+    if (condition1){
+        var max_index = (initialinfo["log_entries"].length) - 1
+        condition2 = (max_index >= 0) ? true : false 
+    }
+    console.log(condition1)
+    console.log(condition2)
+    const rows = (condition1 && condition2) ? initialinfo["log_entries"][max_index]["log_entries"].map((row) => ({
+        id   : initialinfo["log_entries"][max_index]["log_entries"].indexOf(row), 
+        col1 : row["log_in_time"],
+        col2 : row["log_out_time"],
+        col3 : row["interval_time"],
+        col4 : row["log_state"]
+    })) : [];  
     
     return (
         <div className="Subsection">
             <div className="Subsection1">
                 <h2 className="Statusmsg">{initialinfo['live_state'] === 0 ? "You are OUT" : "You are IN"}</h2>
                 <PunchRegion login_name={initialinfo['login_name']} livestate={initialinfo['live_state']} setInfo={setInitialinfo}/>
-                {/* <div className="TodaysLog"></div> */}
             </div>
             <div className="TodaysLog">
-                    <DataGrid rows={rows} columns={columns} rowHeight={30} />
+                { initialinfo["log_entries"] !== undefined ? <DataGrid rows={rows} columns={columns} rowHeight={30} /> : null }
             </div>
         </div>
     );

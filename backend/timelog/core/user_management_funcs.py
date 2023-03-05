@@ -1,3 +1,4 @@
+from datetime import date
 from timelog.models import User
 from timelog.serializers import UserSerializer, UserDataSerializer
 

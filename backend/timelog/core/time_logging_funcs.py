@@ -1,10 +1,16 @@
+from datetime import datetime, date
+
 from timelog.models import TimeLogEntry, TimeLogCorrectionRequest, UserTimeRecord
-from timelog.serializers import TimeLogEntrySerializer, TimeLogCorrectionRequestSerializer
+from timelog.serializers import TimeLogEntrySerializer, TimeLogCorrectionRequestSerializer, UserTimeRecordSerializer
 
 from timelog.core.base import get_time_delta
 
 
 def record_time_entry(time_log_entry):
+    date_obj = datetime.strptime(time_log_entry["log_date"], '%Y-%m-%d')
+    time_log_entry['log_year'] = date_obj.year
+    time_log_entry['log_month'] = date_obj.month
+    time_log_entry['log_day'] = date_obj.day
     serializer = TimeLogEntrySerializer(data=time_log_entry)
     is_valid = serializer.is_valid()
     if is_valid:
@@ -12,6 +18,17 @@ def record_time_entry(time_log_entry):
         return (True, ack)
     else:
         return (False, serializer.errors)
+
+
+def get_all_time_entries_for_the_month(user):
+    date_obj = date.today()
+    current_year = date_obj.year
+    current_month = date_obj.month
+    log_entries = UserTimeRecord.objects.filter(
+        user=user, year=current_year, month=current_month)
+    serializer = UserTimeRecordSerializer(log_entries, many=True)
+
+    return serializer.data
 
 
 def get_all_time_entries(user, date):

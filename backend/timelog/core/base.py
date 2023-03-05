@@ -44,3 +44,17 @@ def is_time_within_bounds(left_limit, time_input, right_limit):
     bound_condition = left_diff_ok and right_diff_ok
     print("%s <<< %s <<< %s" % (left_limit, time_input, right_limit))
     return bound_condition
+
+
+def get_day_from_number(day_number):
+    _map = {
+        0: "Monday",
+        1: "Tuesday",
+        2: "Wednesday",
+        3: "Thursday",
+        4: "Friday",
+        5: "Saturday",
+        6: "Sunday"
+    }
+    assert 0 <= day_number <= 6, "invalid day number"
+    return _map[day_number]

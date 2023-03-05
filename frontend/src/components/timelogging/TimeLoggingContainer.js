@@ -1,13 +1,11 @@
 import React from 'react';
-import { useState } from 'react';
-import TimeLoggingSideNav from './TimeLoggingSideNav';
 import SubSection from './SubSection';
+import LeftSubcomponent from './LeftSubcomponent';
 
 const TimeLoggingContainer = ({initialinfo, setInitialinfo }) => {
-    const [activeTab, setActiveTab] = useState("timeentry")
     return (
         <div className='TimeLoggingMainContainer'>
-            <TimeLoggingSideNav activeTab={activeTab} setActiveTab={setActiveTab}/>
+            <LeftSubcomponent initialinfo={initialinfo} setInitialinfo={setInitialinfo}/>
             <SubSection initialinfo={initialinfo} setInitialinfo={setInitialinfo}/>
         </div>
     );
