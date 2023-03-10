@@ -85,7 +85,8 @@
   border-width: 0.5ch;
   border-color:white;
   border-style:double;
-  background-color: rgba(50, 83, 220, 2);
+  border-radius: 0.5em;
+  background-color: #2f7bd7;
 }
 
 .CheekletHeader{
@@ -138,7 +139,7 @@
   border-width: 0.2ch;
   border-color:white;
   border-style:double;
-  background-color: rgba(50, 83, 220, 2);
+  background-color: #2f7bd7;
   font-family:Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bold;
   color: rgba(255, 255, 255, 0.82);
@@ -146,7 +147,9 @@
 }
 
 .Statusmsg{
-  color: red
+  font-size: 1em;
+  color: red;
+  font-weight: bold;
 }
 
 .ButtonContainer{
@@ -173,25 +176,125 @@
   height: 60vmin;
   display: flex;
   flex-direction: column;
+  margin-top: 0;
 }
 
 .Subsection1{
   width: 25vw;
-  height: 15vmin;
+  height: 30vmin;
   display: flex;
   flex-direction: column;
   margin-left: 10vmin;
+  justify-content: space-around;
 }
 
-.LeftSubcomponent{
-  width: 40vw;
-  height: 50vmin;
-  margin-top: 5vmin;
+.TimerContainer{
+  width: 25vw;
+  height: 10vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.TimerContainerSubComponent{
+  width: 10vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  border-color: #0787ff;
+  border-right: groove;
+}
+
+.TimerHeader{
+  font-size: 0.75em;
+  color: #2f7bd7;
+  font-weight: bold;
+}
+
+.ElapsedTime{
+  font-size: 1.5em;
 }
 
 .TodaysLog{
   width: 32vw;
   height: 40vmin;
   margin-left: 5vmin;
-  margin-top: 5vmin;
+}
+
+.TodaysDate{
+  font-size: 1em;
+  text-align: left;
+  margin-left: 5vmin;
+  color: #2f7bd7;
+  font-weight: bold;
+}
+
+.LeftSubcomponent{
+  width: 35vw;
+  height: 59vmin;
+  margin-top: 1vmin;
+  display: flex;
+  flex-direction: column;
+}
+
+.LeftSubBanner{
+  width: 35vw;
+  height: 10vmin;
+  margin-left: 1vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.DataGridContainer{
+  width: 35vw;
+  height: 56vmin;
+  margin-left: 1vmin;
+}
+
+/* dropdown menu related styling */
+
+.dropbtn {
+  background-color: #2f7bd7;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
 }

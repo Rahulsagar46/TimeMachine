@@ -28,9 +28,8 @@ const PunchRegion = ({login_name, livestate, setInfo}) => {
           Accept: 'application/json'
         }
       }).then(() => {
-        setInfo(prevState => {
-          return { ...prevState, live_state: 1}
-        })}).catch(err => console.log(err));
+          setInfo()
+        }).catch(err => console.log(err));
     }
     
     function recordPunchout(){
@@ -46,9 +45,8 @@ const PunchRegion = ({login_name, livestate, setInfo}) => {
           Accept: 'application/json'
         }
       }).then(() => {
-        setInfo(prevState => {
-          return { ...prevState, live_state: 0}
-        })}).catch(err => console.log(err))
+        setInfo()
+      }).catch(err => console.log(err));
     }
     return (
         <div className='ButtonContainer'>
