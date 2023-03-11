@@ -67,3 +67,16 @@ export function getRemainingTime(mandatoryWorkTime, mandatoryBreakTime, elapsedT
     const remainingTime = mandatoryWorkTime - elapsedTime
     return remainingTime
 }
+
+export function getNetWorkingTime(mandatoryWorkTime, mandatoryBreakTime, actualWorkTime){
+    var prefix = "+"
+    if(mandatoryWorkTime > actualWorkTime){
+        prefix = "-"
+    } else if(mandatoryWorkTime === actualWorkTime){
+        prefix = ""
+    }else{
+        prefix = "+"
+    }
+    const net = getHoursFromSeconds(Math.abs(mandatoryWorkTime - actualWorkTime))
+    return (prefix + net)
+}

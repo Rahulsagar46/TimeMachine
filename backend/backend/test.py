@@ -28,14 +28,14 @@ def add_time_log_entry():
 
 def add_test_users():
     user_data = {
-        "login_name": "rvoduru",
-        "sap_id": "700101",
-        "first_name": "Rahul",
-        "last_name": "Voduru",
-        "email_id": "rvoduru@gmail.com",
+        "login_name": "philm",
+        "sap_id": "700102",
+        "first_name": "XXX",
+        "last_name": "Y",
+        "email_id": "xyz@gmail.com",
         "department": "PD",
         "team": "PSG",
-        "mandatory_break_time": 1800,
+        "mandatory_break_time": 2400,
         "mandatory_working_time_per_day": 28800,
         "net_working_time": 21600
     }
@@ -66,13 +66,15 @@ def add_new_team():
 def edit_time_log():
     time_log_corrected = {
         "requester": "rvoduru",
-        "entry_id": 4,
-        "entry_date": "2023-01-12",
-        "entry_in_time": "22:52:02",
-        "entry_out_time": "22:54:50",
+        "entry_id": 2,
+        "entry_date": "2023-03-11",
+        "entry_in_time": "15:30:45",
+        "entry_out_time": "15:37:51",
         "approver_decision": -1,
-        "request_date": "2023-01-12"
-
+        "request_date": "2023-03-11",
+        "request_year": 2023,
+        "request_month": 3,
+        "remark": "hello test test"
     }
     r = requests.post("http://127.0.0.1:8000/editlog/",
                       json=time_log_corrected, headers=headers)
@@ -97,8 +99,8 @@ def decide_correction():
 if __name__ == "__main__":
     # edit_time_log()
     # add_time_log_entry()
-    add_new_dept()
-    add_new_team()
-    add_test_users()
+    # add_new_dept()
+    # add_new_team()
+    # add_test_users()
     # decide_correction()
     pass

@@ -48,7 +48,7 @@
 
 .HeaderContainer{
   width: 100vw;
-  height: 10vmin;
+  height: 7vmin;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -75,22 +75,22 @@
 
 .CheekletContainer{
   width: 100vw;
-  height: 25vmin;
+  height: 21vmin;
   display: flex;
   flex-direction: row;
 }
 
 .Cheeklet{
   flex: 1;
-  border-width: 0.5ch;
-  border-color:white;
+  border-width: 0.4ch;
+  border-color:whitesmoke;
   border-style:double;
-  border-radius: 0.5em;
+  border-radius: 0.4em;
   background-color: #2f7bd7;
 }
 
 .CheekletHeader{
-  font-size: 1.2em;
+  font-size: 1em;
   font-weight: bold;
   color: rgba(50, 83, 220, 2);
   background-color: white;
@@ -103,7 +103,7 @@
 
 .TimeVal{
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size: 5em;
+  font-size: 4em;
   font-weight: normal;
   color: white;
 }
@@ -157,7 +157,7 @@
   height: 5vmin;
   display: flex;
   flex-direction: row;
-  padding-left: 5vmin;
+  padding-left: 8vmin;
 }
 
 .PunchButton{
@@ -173,7 +173,7 @@
 
 .Subsection{
   width: 80vw;
-  height: 60vmin;
+  height: 66vmin;
   display: flex;
   flex-direction: column;
   margin-top: 0;
@@ -184,7 +184,7 @@
   height: 30vmin;
   display: flex;
   flex-direction: column;
-  margin-left: 10vmin;
+  margin-left: 12vmin;
   justify-content: space-around;
 }
 
@@ -214,30 +214,57 @@
   font-size: 1.5em;
 }
 
-.TodaysLog{
-  width: 32vw;
-  height: 40vmin;
-  margin-left: 5vmin;
+.CorrectionRequestsContainer {
+  width: 35vw;
+  height: 36vmin;
+  margin-top: 1vmin;
+  margin-right: 1vmin;
+  margin-left: 2vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
-.TodaysDate{
-  font-size: 1em;
+.CorrectionDataGridContainer{
+  width: 35vw;
+  height: 36vmin;
+}
+
+.RightSubComponentContainer{
+  width: 28vw;
+  height: 64vmin;
+  margin-top: 3vmin;
+  margin-right: 1vmin;
+  margin-bottom: 1vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.TodaysLog{
+  width: 25vw;
+  height: 60vmin;
+  margin-left: 1vmin;
+}
+
+.DataGridHeader{
+  font-size: 1.2em;
   text-align: left;
-  margin-left: 5vmin;
+  margin-left: 1vmin;
   color: #2f7bd7;
   font-weight: bold;
 }
 
 .LeftSubcomponent{
-  width: 35vw;
-  height: 59vmin;
+  width: 38vw;
+  height: 65vmin;
   margin-top: 1vmin;
   display: flex;
   flex-direction: column;
 }
 
 .LeftSubBanner{
-  width: 35vw;
+  width: 38vw;
   height: 10vmin;
   margin-left: 1vmin;
   display: flex;
@@ -245,8 +272,8 @@
 }
 
 .DataGridContainer{
-  width: 35vw;
-  height: 56vmin;
+  width: 38vw;
+  height: 60vmin;
   margin-left: 1vmin;
 }
 
@@ -297,4 +324,17 @@
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
   background-color: #3e8e41;
+}
+
+.DataGridCols{
+  font-weight: bolder;
+  color: #2f7bd7;
+}
+
+.NetNegative{
+  color: red;
+}
+
+.NetPositive{
+  color: green;
 }

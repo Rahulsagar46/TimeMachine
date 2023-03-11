@@ -119,3 +119,24 @@ def update_total_time(user_name, date):
         user=user_name, date=date).get()
     time_record_object.total_work_time_for_day = time_sum
     time_record_object.save()
+
+
+def get_relevant_correction_requests(user_name):
+    date_obj = date.today()
+    current_year = date_obj.year
+    current_month = date_obj.month
+    correction_requests_pending = TimeLogCorrectionRequest.objects.filter(
+        requester=user_name, approver_decision=-1)
+    serializer1 = TimeLogCorrectionRequestSerializer(
+        correction_requests_pending, many=True)
+    correction_requests_this_month = TimeLogCorrectionRequest.objects.filter(
+        requester=user_name, request_year=current_year, request_month=current_month)
+    serializer2 = TimeLogCorrectionRequestSerializer(
+        correction_requests_this_month, many=True)
+    final_list = serializer1.data
+    for correction in serializer2.data:
+        if correction in final_list:
+            continue
+        final_list.append(correction)
+
+    return final_list

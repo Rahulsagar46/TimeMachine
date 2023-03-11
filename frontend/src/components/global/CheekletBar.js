@@ -8,8 +8,8 @@ const CheekletBar = (props) => {
                 <Cheeklet cheeklet_header='Net Working Hours' cheeklet_val='10'/>
                 <Cheeklet cheeklet_header='Total Vacation Days' cheeklet_val='28'/>
                 <Cheeklet cheeklet_header='Planned Vacation Days' cheeklet_val='10'/>
+                <Cheeklet cheeklet_header='KZE' cheeklet_val='01'/>
                 <Cheeklet cheeklet_header='Approval pending' cheeklet_val='02'/>
-                
             </div>
         </div>
     );

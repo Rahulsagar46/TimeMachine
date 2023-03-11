@@ -196,6 +196,9 @@ class TimeLogCorrectionRequestSerializer(serializers.Serializer):
     entry_out_time = serializers.TimeField()
     approver_decision = serializers.IntegerField()
     request_date = serializers.DateField()
+    request_year = serializers.IntegerField()
+    request_month = serializers.IntegerField()
+    remark = serializers.CharField()
     decision_date = serializers.DateField(required=False)
 
     def _check_correction_request_validity(self, requester, entry_date, entry_id, entry_in_time, entry_out_time):
@@ -247,6 +250,9 @@ class TimeLogCorrectionRequestSerializer(serializers.Serializer):
         entry_out_time = validated_data['entry_out_time']
         approver_decision = validated_data.get('approver_decision', -1)
         request_date = validated_data['request_date']
+        request_year = validated_data['request_year']
+        request_month = validated_data['request_month']
+        remark = validated_data['request_month']
         decision_date = validated_data.get('decision_date', None)
 
         req_obj = User.objects.get(pk=requester)
@@ -255,7 +261,7 @@ class TimeLogCorrectionRequestSerializer(serializers.Serializer):
             requester, entry_date, entry_id, entry_in_time, entry_out_time)
         if is_valid:
             correction_obj = TimeLogCorrectionRequest.objects.create(
-                requester=req_obj, approver=approv_obj, entry_id=entry_id, entry_date=entry_date, entry_in_time=entry_in_time, entry_out_time=entry_out_time, approver_decision=approver_decision, request_date=request_date, decision_date=decision_date)
+                requester=req_obj, approver=approv_obj, entry_id=entry_id, entry_date=entry_date, entry_in_time=entry_in_time, entry_out_time=entry_out_time, approver_decision=approver_decision, request_date=request_date, request_year=request_year, request_month=request_month, remark=remark, decision_date=decision_date)
 
             return (True, correction_obj)
         return (False, None)

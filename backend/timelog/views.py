@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from timelog.core.time_logging_funcs import record_time_entry, get_all_time_entries, request_log_entry_correction, get_all_open_correction_requests, decide_log_entry_correction
 from timelog.core.time_logging_funcs import get_all_time_entries_for_the_month
+from timelog.core.time_logging_funcs import get_relevant_correction_requests
 from timelog.core.user_management_funcs import list_all_users, get_initial_user_details, create_new_user_with_relevant_data
 from timelog.core.team_management_funcs import create_new_team, create_new_department
 
@@ -19,6 +20,8 @@ def load_initial_values(request, user_login):
     (success, user_details) = get_initial_user_details(user_login)
     log_entries = get_all_time_entries_for_the_month(user_login)
     user_details["log_entries"] = log_entries
+    correction_requests = get_relevant_correction_requests(user_login)
+    user_details["correction_requests"] = correction_requests
     if success:
         return Response(user_details)
     return Response(status=status.HTTP_404_NOT_FOUND)
@@ -36,7 +39,13 @@ def get_open_correction_requests(request, approver_name):
     return JsonResponse(correction_requests, safe=False)
 
 
+@api_view(['GET'])
+def get_relevant_correction_requests_for_requester(request, requester):
+    correction_requests = get_relevant_correction_requests(requester)
+    return JsonResponse(correction_requests, safe=False)
+
 # time entry functions
+
 
 @api_view(['POST'])
 @csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
