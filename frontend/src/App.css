@@ -338,3 +338,64 @@
 .NetPositive{
   color: green;
 }
+
+/* vacation management related css here*/
+.VacationContainer{
+  width: 98%;
+  height: 60vmin;
+  border-style: groove;
+  border-color: red;
+  margin-right: 1vmin;
+  margin-left: 1vmin;
+  display: flex;
+}
+
+.VacationLeftNav{
+  width:15%;
+  height: 10vmin;
+  display: flex;
+  flex-direction: column;
+}
+
+.VacationLeftNavItems{
+  width:90%;
+  height: 10vmin;
+  border-style: groove;
+  background-color: #2f7bd7;
+  color: white;
+  text-align: left;
+  padding-left: 2vmin;
+}
+
+.TeamCalendarContainer{
+  width:75%;
+  height: 55vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content:flex-start;
+  margin-top: 5vmin;
+  margin-left: 3vmin
+}
+
+.UserNameContainer{
+  width:100%;
+  height: 3vmin;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.MonthlyCalendarContainer{
+  width:80%;
+  height: 3vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.CalendarDay{
+  width:2.75%;
+  height: 3vmin;
+  border-style:inset;
+  border-width: 2px;
+  background-color: whitesmoke;
+}
