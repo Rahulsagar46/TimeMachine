@@ -1,20 +1,29 @@
 import React from "react";
 
-const MonthlyCalendar = ({ user, month, year}) => {
-    var rows = []
-    for(let i=1; i<=30; i++){
-        rows.push(i)
-    }
+const UserCalendar = ({ user, displayDates, weekdaysMap}) => {
+    
     return (
-            <div className="UserNameContainer">
-                <div>{user}</div>
+            <div className="UserCalendarContainer">
+                <div className="UserName">{user}</div>
                 <div className="MonthlyCalendarContainer">
                     { 
-                        rows.map(i =>{ return (<div className="CalendarDay">{i}</div>)})
+                        displayDates.map(weekday => { 
+                            var clsName = "CalendarDay CalendarDayCommon"
+                            if(weekdaysMap[weekday][0] === 5 || weekdaysMap[weekday][0] === 6){
+                                clsName = clsName + " " + "CalendarHoliday"
+                            }
+                            if(weekday==31){
+                                clsName = clsName + " " + "CalendarMonthEnd"
+                            }
+                            return (
+                                <div className={clsName}>{weekday}</div>
+                                )
+                            }
+                        )
                     }
                 </div> 
             </div>    
         )
 }
 
-export default MonthlyCalendar
+export default UserCalendar

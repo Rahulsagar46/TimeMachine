@@ -343,28 +343,9 @@
 .VacationContainer{
   width: 98%;
   height: 60vmin;
-  border-style: groove;
-  border-color: red;
   margin-right: 1vmin;
   margin-left: 1vmin;
-  display: flex;
-}
-
-.VacationLeftNav{
-  width:15%;
-  height: 10vmin;
-  display: flex;
-  flex-direction: column;
-}
-
-.VacationLeftNavItems{
-  width:90%;
-  height: 10vmin;
-  border-style: groove;
-  background-color: #2f7bd7;
-  color: white;
-  text-align: left;
-  padding-left: 2vmin;
+  display: flex
 }
 
 .TeamCalendarContainer{
@@ -372,17 +353,49 @@
   height: 55vmin;
   display: flex;
   flex-direction: column;
-  justify-content:flex-start;
-  margin-top: 5vmin;
-  margin-left: 3vmin
+  margin-top: 8vmin;
+  margin-left: 1vmin
 }
 
-.UserNameContainer{
+.TeamCalendarHeader{
+  width:80%;
+  height: 3vmin;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 1vmin;
+  border-color: red;
+  border-style: groove;
+  margin-left: 20%;
+}
+
+.UserCalendarContainer{
   width:100%;
   height: 3vmin;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-top: 1vmin;
+  justify-self: left;
+}
+
+.UserName{
+  width: 20%;
+  max-height: 3vmin;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  background-color: #2f7bd7;
+  color: whitesmoke;
+  padding-left: 1vmin;
+  font-weight: bold;
+}
+
+.UserNameDummy{
+  background-color: whitesmoke;
+  color: #2f7bd7;
+  text-align: center;
 }
 
 .MonthlyCalendarContainer{
@@ -390,12 +403,32 @@
   height: 3vmin;
   display: flex;
   flex-direction: row;
+  margin-left: 1vmin;
 }
 
 .CalendarDay{
-  width:2.75%;
+  width:2.80%;
   height: 3vmin;
+  border-width: 2px;
+  border-style:inset;
+}
+
+.CalendarDayHeader{
+  background-color: rgba(0, 0, 0, 0.744);
+  color: whitesmoke
+}
+
+.CalendarDayCommon{
   border-style:inset;
   border-width: 2px;
   background-color: whitesmoke;
+}
+
+.CalendarMonthEnd{
+  border-right-width: 5px;
+  border-right-color: #2f7bd7;
+}
+
+.CalendarHoliday{
+  background-color: rgba(255, 0, 0, 0.501);
 }

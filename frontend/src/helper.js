@@ -27,7 +27,7 @@ export default function getMonthFromIndex(index){
     return monthIndexMap[index];
 }
 
-function getDayFromIndex(index){
+export function getDayFromIndex(index){
     return dayIndexMap[index];
 }
 
@@ -38,7 +38,8 @@ export function getDateInfo(){
         "month" : dateObj.getMonth(),
         "year" : dateObj.getFullYear(),
         "dateformat1" : String(dateObj.getDate()).padStart(2, 0)+'-'+String(dateObj.getMonth() + 1).padStart(2, 0)+'-'+dateObj.getFullYear(),
-        "dateformat2" : dateObj.getFullYear()+'-'+String(dateObj.getMonth() + 1).padStart(2, 0)+'-'+String(dateObj.getDate()).padStart(2, 0)
+        "dateformat2" : dateObj.getFullYear()+'-'+String(dateObj.getMonth() + 1).padStart(2, 0)+'-'+String(dateObj.getDate()).padStart(2, 0),
+        "weekdayindex": dateObj.getDay()
     }
     return returnObj;
 }
@@ -79,4 +80,27 @@ export function getNetWorkingTime(mandatoryWorkTime, mandatoryBreakTime, actualW
     }
     const net = getHoursFromSeconds(Math.abs(mandatoryWorkTime - actualWorkTime))
     return (prefix + net)
+}
+
+export function getNextWeekDay(currentDayIndex){
+    if(currentDayIndex === 6){
+        return [0, dayIndexMap[0].slice(0, 2)]
+    }
+    const nextIndex = currentDayIndex + 1
+    return [nextIndex, dayIndexMap[nextIndex].slice(0, 2)]
+}
+
+export function getMaxDaysinMonth(year, monthIndex){
+    const cat1 = [0, 2, 4, 6, 7, 9, 11] // jan, mar, may, jul, aug, oct, dec
+    const cat2 = [3, 5, 8, 10] // apr, jun, sep, nov
+    const cat3 = [1] // feb
+
+    if(cat1.includes(monthIndex)){
+        return 31
+    }else if (cat2.includes(monthIndex)){
+        return 30
+    }else{
+        // TBD add leap year logic here
+        return 28
+    }
 }
