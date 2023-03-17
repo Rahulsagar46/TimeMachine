@@ -407,7 +407,7 @@
 }
 
 .CalendarDay{
-  width:2.80%;
+  width:3%;
   height: 3vmin;
   border-width: 2px;
   border-style:inset;
@@ -432,3 +432,9 @@
 .CalendarHoliday{
   background-color: rgba(255, 0, 0, 0.501);
 }
+
+.MonthHeader{
+  color: #2f7bd7;
+  font-weight: bold;
+}
+

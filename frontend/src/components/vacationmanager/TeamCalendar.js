@@ -1,37 +1,76 @@
 import React from "react";
 import UserCalendar from "./MonthlyCalendar";
+import MonthHeader from "./MonthHeader";
 import { getDateInfo, getNextWeekDay, getDayFromIndex } from "../../helper";
 import { getMaxDaysinMonth } from "../../helper";
 
 const TeamCalendar = () => {
     const dateInfo = getDateInfo()
-    const teamMembers = ["Rahulsagar Voduru", "Fabian Mareyen", "Christoph Juergensdfffffffffffff", "Max Pitschi"]
-    var rows = []
-    var weekdaysMap = {}
-    var count = 0
     const startDay = dateInfo.dayofmonth  
     const startMonthIndex = dateInfo.month // Date object gives month index from 0 to 11 
     const startYear = dateInfo.year
+    
+    const maxDaysonCalendar = 30
+    const teamMembers = ["Rahulsagar Voduru", "Fabian Mareyen", "Christoph Juergensdfffffffffffff", "Max Pitschi"]
+
+    var rows = []
+    var weekdaysMap = {}
+    var count = 0
     var runningWeekdayIndex = (dateInfo.weekdayindex) - 1 // Date object gives weekday index from 1 to 7
-    const maxDays = getMaxDaysinMonth(startYear, startMonthIndex)
-    for(var i = startDay; count <= 30; i++){
-        if(i === startDay){
+    var runningMonthIndex = startMonthIndex
+    
+    var monthYearDateMap = {}
+    monthYearDateMap[runningMonthIndex] = {"year" : startYear, "start" : startDay}
+    
+    var monthIndexList = [runningMonthIndex]
+    var maxDays = getMaxDaysinMonth(startYear, runningMonthIndex)
+    
+    for(var i = startDay; count <= maxDaysonCalendar; i++){
+        if(i <= maxDays){
             rows.push(i)
-            weekdaysMap[i] = [runningWeekdayIndex, getDayFromIndex(runningWeekdayIndex).slice(0, 2)]
-        }else{
-                if(i <= maxDays){
-                    rows.push(i)
-                    const [nextIndex, nextWeekDay] = getNextWeekDay(runningWeekdayIndex)
-                    runningWeekdayIndex = nextIndex
-                    weekdaysMap[i] = [nextIndex, nextWeekDay]
-                }else{
-                    i = 0
-                }
+            if(i === startDay){
+                weekdaysMap[i] = [runningWeekdayIndex, getDayFromIndex(runningWeekdayIndex).slice(0, 2)]
+            }else{
+                const [nextIndex, nextWeekDay] = getNextWeekDay(runningWeekdayIndex)
+                runningWeekdayIndex = nextIndex
+                weekdaysMap[i] = [nextIndex, nextWeekDay]
             }
+            if(i === maxDays){
+                monthYearDateMap[runningMonthIndex]["end"] = i
+            }
+        }else{
+            // In this section cases for turn of year has to be included
+            i = 0
+            runningMonthIndex++
+            monthIndexList.push(runningMonthIndex)
+            maxDays = getMaxDaysinMonth(startYear, runningMonthIndex)
+            monthYearDateMap[runningMonthIndex] = {"year" : startYear, "start" : 1}
+        }
+    
+        if(count === maxDaysonCalendar){
+            monthYearDateMap[runningMonthIndex]["end"] = i
+        }
         count++
     }
     return (
         <div className="TeamCalendarContainer">
+            <div className="UserCalendarContainer">
+                <div className="UserName UserNameDummy"></div>
+                <div className="MonthlyCalendarContainer">
+                    {
+                        monthIndexList.map(monthIndex => {
+                            return (
+                                <MonthHeader monthIndex={monthIndex} 
+                                            year={monthYearDateMap[monthIndex]["year"]}  
+                                            startDate={monthYearDateMap[monthIndex]["start"]} 
+                                            endDate={monthYearDateMap[monthIndex]["end"]}
+                                            maxDaysonCalendar={maxDaysonCalendar}
+                                />
+                            )
+                        })
+                    }
+                </div>
+            </div>
             <div className="UserCalendarContainer">
                 <div className="UserName UserNameDummy">Team Calendar</div>
                 <div className="MonthlyCalendarContainer">
@@ -55,8 +94,7 @@ const TeamCalendar = () => {
                     }
                 )
             }
-        </div>
-            
+        </div>       
     )
 } 
 export default TeamCalendar
