@@ -1,17 +1,37 @@
 import React from "react";
+import {useState} from 'react';
 import UserCalendar from "./MonthlyCalendar";
 import MonthHeader from "./MonthHeader";
+import CalendarNav from "./CalendarNav";
 import { getDateInfo, getNextWeekDay, getDayFromIndex } from "../../helper";
 import { getMaxDaysinMonth } from "../../helper";
 
 const TeamCalendar = () => {
-    const dateInfo = getDateInfo()
-    const startDay = dateInfo.dayofmonth  
+    const [dateInfo, setdateInfo] = useState(getDateInfo())
+    const [teamMembers, setTeamMembers] = useState(["XXXX1", "YYYYY1", "ZZZZ1", "MMMMM1"])
+    
+    const dateObjUpdate = (year, monthIndex, day) => {
+        const newDateObj = new Date(year, monthIndex, day)
+        const newDateInfo = getDateInfo(newDateObj)
+        setdateInfo(newDateInfo)
+    }
+    
+    const groupMembersUpdate = (event) => {
+        const value = parseInt(event.target.value)
+        var members = []
+        if(value === ""){
+            members = ["XXXX1", "YYYYY1", "ZZZZ1", "MMMMM1"]
+        } else if (value === "G2"){
+            members = ["XXXX1", "YYYYY1", "MMMMM1"]
+        } else{
+            members = ["XXXX1", "YYYYY1"]
+        }
+        setTeamMembers(members)
+    }
+    const startDay = dateInfo.dayofmonth 
     const startMonthIndex = dateInfo.month // Date object gives month index from 0 to 11 
     const startYear = dateInfo.year
-    
     const maxDaysonCalendar = 30
-    const teamMembers = ["Rahulsagar Voduru", "Fabian Mareyen", "Christoph Juergensdfffffffffffff", "Max Pitschi"]
 
     var rows = []
     var weekdaysMap = {}
@@ -24,7 +44,7 @@ const TeamCalendar = () => {
     
     var monthIndexList = [runningMonthIndex]
     var maxDays = getMaxDaysinMonth(startYear, runningMonthIndex)
-    
+
     for(var i = startDay; count <= maxDaysonCalendar; i++){
         if(i <= maxDays){
             rows.push(i)
@@ -54,8 +74,10 @@ const TeamCalendar = () => {
     }
     return (
         <div className="TeamCalendarContainer">
-            <div className="UserCalendarContainer">
-                <div className="UserName UserNameDummy"></div>
+            <div className="UserCalendarContainer MonthHeaderContainer">
+                <div className="CalendarNavContainer">
+                    <CalendarNav currentMonthIndex={startMonthIndex} currentYear={startYear} updateFunc={dateObjUpdate}/>
+                </div>
                 <div className="MonthlyCalendarContainer">
                     {
                         monthIndexList.map(monthIndex => {
@@ -72,7 +94,16 @@ const TeamCalendar = () => {
                 </div>
             </div>
             <div className="UserCalendarContainer">
-                <div className="UserName UserNameDummy">Team Calendar</div>
+                <div className="UserName UserNameDummy">
+                    <div style={{fontWeight: "bold"}}>Team Calendar</div>
+                    <div className="GroupSelector">
+                        <select id="Group" onChange={groupMembersUpdate}>
+                            <option value="" selected>All</option>
+                            <option value="G1">Group-1111111111</option>
+                            <option value="G2">Group-2</option>
+                        </select>
+                    </div> 
+                </div>
                 <div className="MonthlyCalendarContainer">
                     {
                        rows.map(weekday => {

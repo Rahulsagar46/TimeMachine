@@ -353,7 +353,7 @@
   height: 55vmin;
   display: flex;
   flex-direction: column;
-  margin-top: 8vmin;
+  margin-top: 2vmin;
   margin-left: 1vmin
 }
 
@@ -396,6 +396,9 @@
   background-color: whitesmoke;
   color: #2f7bd7;
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  /*justify-content: space-around; */
 }
 
 .MonthlyCalendarContainer{
@@ -438,3 +441,47 @@
   font-weight: bold;
 }
 
+.MonthHeaderContainer{
+  height: 3vmin;
+}
+
+.CalendarNavContainer{
+  width: 20%;
+  height: 6vmin;
+  text-align: left;
+  background-color: whitesmoke;
+  padding-left: 1vmin;
+}
+
+.CalendarNav{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.GroupSelector{
+  margin-left: 1vmin;
+  width: 40%
+}
+
+#Group{
+  width: 80%;
+  background-color:#2f7bd7;
+  color: whitesmoke
+}
+
+#Month{
+  background-color:#2f7bd7;
+  color: whitesmoke
+}
+
+#Year{
+  background-color:#2f7bd7;
+  color: whitesmoke
+}
+
+.CalendarNavBtn{
+  background-color:#2f7bd7;
+  color: whitesmoke;
+  font-weight: bold;
+}

@@ -31,8 +31,12 @@ export function getDayFromIndex(index){
     return dayIndexMap[index];
 }
 
-export function getDateInfo(){
-    const dateObj = new Date()
+export function getDateInfo(dateObjIn=null){
+    if(dateObjIn === null){
+        var dateObj = new Date()
+    }else{
+        var dateObj = dateObjIn
+    }     
     const returnObj = {
         "dayofmonth" : dateObj.getDate(),
         "month" : dateObj.getMonth(),
