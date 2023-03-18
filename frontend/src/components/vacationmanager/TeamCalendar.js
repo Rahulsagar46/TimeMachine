@@ -44,16 +44,19 @@ const TeamCalendar = () => {
     
     var monthIndexList = [runningMonthIndex]
     var maxDays = getMaxDaysinMonth(startYear, runningMonthIndex)
-
-    for(var i = startDay; count <= maxDaysonCalendar; i++){
+    var nextYear = startYear
+    var key = ""
+    var monthChange = false
+    for(var i = startDay; count <= maxDaysonCalendar; i++){ 
+        key = String(i) + "-" + String(runningMonthIndex) + "-" + String(nextYear)
         if(i <= maxDays){
-            rows.push(i)
-            if(i === startDay){
-                weekdaysMap[i] = [runningWeekdayIndex, getDayFromIndex(runningWeekdayIndex).slice(0, 2)]
+            rows.push(key)
+            if(i === startDay && monthChange === false){
+                weekdaysMap[key] = [runningWeekdayIndex, getDayFromIndex(runningWeekdayIndex).slice(0, 2)]
             }else{
                 const [nextIndex, nextWeekDay] = getNextWeekDay(runningWeekdayIndex)
                 runningWeekdayIndex = nextIndex
-                weekdaysMap[i] = [nextIndex, nextWeekDay]
+                weekdaysMap[key] = [nextIndex, nextWeekDay]
             }
             if(i === maxDays){
                 monthYearDateMap[runningMonthIndex]["end"] = i
@@ -61,7 +64,6 @@ const TeamCalendar = () => {
         }else{
             // If the second month in the view is from another year
             i = 0
-            var nextYear = startYear
             if(runningMonthIndex === 11){
                 runningMonthIndex = 0
                 nextYear++
@@ -71,6 +73,7 @@ const TeamCalendar = () => {
             monthIndexList.push(runningMonthIndex)
             maxDays = getMaxDaysinMonth(nextYear, runningMonthIndex)
             monthYearDateMap[runningMonthIndex] = {"year" : nextYear, "start" : 1}
+            monthChange = true
         }
     
         if(count === maxDaysonCalendar){
@@ -114,7 +117,7 @@ const TeamCalendar = () => {
                     {
                        rows.map(weekday => {
                             var clsName = "CalendarDay CalendarDayHeader" 
-                            if(weekday === 1){
+                            if(parseInt(weekday.split("-")[0]) === 1){
                                 clsName = clsName + " " + "CalendarMonthStart"  
                             }
                             return (

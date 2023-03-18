@@ -345,7 +345,15 @@
   height: 65vmin;
   margin-right: 1vmin;
   margin-left: 1vmin;
-  display: flex
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.VacationSubSection1{
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.75vmin
 }
 
 .TeamCalendarContainer{
@@ -356,6 +364,8 @@
   margin-top: 0vmin;
   margin-left: 0vmin;
   overflow-y: scroll;
+  background-color: whitesmoke;
+  border-radius: 1vmin;
 }
 
 .TeamCalendarHeader{
@@ -485,4 +495,94 @@
   background-color:#2f7bd7;
   color: whitesmoke;
   font-weight: bold;
+}
+
+/* vacation form styles here */
+
+.VacationFormContainer{
+  width:23%;
+  height: 30vmin;
+  margin-left: 1.5vmin;
+  margin-right: 1vmin;
+  text-justify: left;
+  background-color: whitesmoke;
+  border-radius: 1vmin;
+}
+
+.FormWrapper{
+  height : 20vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content:space-evenly;
+}
+
+.FormRow{
+  width : 90%;
+  display : flex;
+  flex-direction: row;
+  font-size: small;
+  font-weight: bold;
+  justify-content: space-between;
+}
+
+.ActionButtons{
+  width: 40%;
+  height: 100%;
+  background-color: #2f7bd7;
+  color: whitesmoke;
+}
+
+.VacationSubSection2{
+  display: flex;
+  flex-direction: row;
+  height: 35vmin;
+  margin-top: 1.25vmin;
+  justify-content: center;
+}
+
+.AbsenceStatusOverviewContainer{
+  width: 65%;
+  height: 34vmin;
+  background-color: whitesmoke;
+  border-radius: 1vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.SubSideNav{
+  width: 15%;
+  height: 10vmin;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1vmin
+}
+
+.SubSideNavItem{
+  text-justify: left;
+  height: 30%;
+  text-align: center;
+  border-style: solid;
+  border-color: #2f7bd7;
+  border-width: 1px;
+  flex: 1;
+  padding-top: 5%;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  cursor:pointer;
+}
+ 
+.SubSideNavItemActive{
+  background-color: whitesmoke;
+  color: #2f7bd7;
+}
+
+.SubSideNavItemInactive{
+  color: whitesmoke;
+  background-color: #2f7bd7;
+}
+
+.AbsenceStatusDatagridContainer{
+  width: 90%;
+  height: 33vmin;
+  margin-top: 1vmin;
 }
