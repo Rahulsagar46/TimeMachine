@@ -13,7 +13,8 @@ var monthIndexMap = {
     11: "December"
 }
 
-var dayIndexMap = {
+// This mapping is only valid for python as weekday indexing is from 0 = Monday, 6 = Sunday
+var dayIndexMapjs = {
     0: "Monday",
     1: "Tuesday",
     2: "Wednesday",
@@ -23,12 +24,23 @@ var dayIndexMap = {
     6: "Sunday"
 }
 
+// The following mapping is for javascript date module where 0=Sunday, 6=Saturday
+var dayIndexMapjs = {
+    0: "Sunday",
+    1: "Monday",
+    2: "Tuesday",
+    3: "Wednesday",
+    4: "Thursday",
+    5: "Friday",
+    6: "Saturday",
+}
+
 export default function getMonthFromIndex(index){
     return monthIndexMap[index];
 }
 
 export function getDayFromIndex(index){
-    return dayIndexMap[index];
+    return dayIndexMapjs[index];
 }
 
 export function getDateInfo(dateObjIn=null){
@@ -43,7 +55,8 @@ export function getDateInfo(dateObjIn=null){
         "year" : dateObj.getFullYear(),
         "dateformat1" : String(dateObj.getDate()).padStart(2, 0)+'-'+String(dateObj.getMonth() + 1).padStart(2, 0)+'-'+dateObj.getFullYear(),
         "dateformat2" : dateObj.getFullYear()+'-'+String(dateObj.getMonth() + 1).padStart(2, 0)+'-'+String(dateObj.getDate()).padStart(2, 0),
-        "weekdayindex": dateObj.getDay()
+        "weekdayindex": dateObj.getDay(),
+        "weekdayName" : dayIndexMapjs[dateObj.getDay()]
     }
     return returnObj;
 }
@@ -88,10 +101,28 @@ export function getNetWorkingTime(mandatoryWorkTime, mandatoryBreakTime, actualW
 
 export function getNextWeekDay(currentDayIndex){
     if(currentDayIndex === 6){
-        return [0, dayIndexMap[0].slice(0, 2)]
+        return [0, dayIndexMapjs[0].slice(0, 2)]
     }
     const nextIndex = currentDayIndex + 1
-    return [nextIndex, dayIndexMap[nextIndex].slice(0, 2)]
+    return [nextIndex, dayIndexMapjs[nextIndex].slice(0, 2)]
+}
+
+function checkLeapYear(year){ 
+    // If a year is multiple of 400,
+    // then it is a leap year
+    if (year % 400 == 0)
+        return true;
+
+    // Else If a year is multiple of 100,
+    // then it is not a leap year
+    if (year % 100 == 0)
+        return false;
+
+    // Else If a year is multiple of 4,
+    // then it is a leap year
+    if (year % 4 == 0)
+        return true;
+    return false;
 }
 
 export function getMaxDaysinMonth(year, monthIndex){
@@ -104,7 +135,11 @@ export function getMaxDaysinMonth(year, monthIndex){
     }else if (cat2.includes(monthIndex)){
         return 30
     }else{
-        // TBD add leap year logic here
+        if(checkLeapYear(year)){
+            // leap year
+            return 29
+        }
+        // normal year
         return 28
     }
 }

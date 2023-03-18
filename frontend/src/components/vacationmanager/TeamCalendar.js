@@ -1,6 +1,6 @@
 import React from "react";
 import {useState} from 'react';
-import UserCalendar from "./MonthlyCalendar";
+import UserCalendar from "./UserCalendar";
 import MonthHeader from "./MonthHeader";
 import CalendarNav from "./CalendarNav";
 import { getDateInfo, getNextWeekDay, getDayFromIndex } from "../../helper";
@@ -15,11 +15,11 @@ const TeamCalendar = () => {
         const newDateInfo = getDateInfo(newDateObj)
         setdateInfo(newDateInfo)
     }
-    
+
     const groupMembersUpdate = (event) => {
-        const value = parseInt(event.target.value)
+        const value = event.target.value
         var members = []
-        if(value === ""){
+        if(value === "default"){
             members = ["XXXX1", "YYYYY1", "ZZZZ1", "MMMMM1"]
         } else if (value === "G2"){
             members = ["XXXX1", "YYYYY1", "MMMMM1"]
@@ -36,7 +36,7 @@ const TeamCalendar = () => {
     var rows = []
     var weekdaysMap = {}
     var count = 0
-    var runningWeekdayIndex = (dateInfo.weekdayindex) - 1 // Date object gives weekday index from 1 to 7
+    var runningWeekdayIndex = (dateInfo.weekdayindex) // Date object gives weekday index from 0:Sunday to 7:Saturday
     var runningMonthIndex = startMonthIndex
     
     var monthYearDateMap = {}
@@ -59,12 +59,18 @@ const TeamCalendar = () => {
                 monthYearDateMap[runningMonthIndex]["end"] = i
             }
         }else{
-            // In this section cases for turn of year has to be included
+            // If the second month in the view is from another year
             i = 0
-            runningMonthIndex++
+            var nextYear = startYear
+            if(runningMonthIndex === 11){
+                runningMonthIndex = 0
+                nextYear++
+            }else{
+                runningMonthIndex++
+            } 
             monthIndexList.push(runningMonthIndex)
-            maxDays = getMaxDaysinMonth(startYear, runningMonthIndex)
-            monthYearDateMap[runningMonthIndex] = {"year" : startYear, "start" : 1}
+            maxDays = getMaxDaysinMonth(nextYear, runningMonthIndex)
+            monthYearDateMap[runningMonthIndex] = {"year" : nextYear, "start" : 1}
         }
     
         if(count === maxDaysonCalendar){
@@ -76,7 +82,7 @@ const TeamCalendar = () => {
         <div className="TeamCalendarContainer">
             <div className="UserCalendarContainer MonthHeaderContainer">
                 <div className="CalendarNavContainer">
-                    <CalendarNav currentMonthIndex={startMonthIndex} currentYear={startYear} updateFunc={dateObjUpdate}/>
+                    <CalendarNav currentStartDay={startDay} currentMonthIndex={startMonthIndex} currentYear={startYear} updateFunc={dateObjUpdate}/>
                 </div>
                 <div className="MonthlyCalendarContainer">
                     {
@@ -98,8 +104,8 @@ const TeamCalendar = () => {
                     <div style={{fontWeight: "bold"}}>Team Calendar</div>
                     <div className="GroupSelector">
                         <select id="Group" onChange={groupMembersUpdate}>
-                            <option value="" selected>All</option>
-                            <option value="G1">Group-1111111111</option>
+                            <option value="default" selected>All</option>
+                            <option value="G1">Group-1</option>
                             <option value="G2">Group-2</option>
                         </select>
                     </div> 
@@ -108,8 +114,8 @@ const TeamCalendar = () => {
                     {
                        rows.map(weekday => {
                             var clsName = "CalendarDay CalendarDayHeader" 
-                            if(weekday === 31){
-                                clsName = clsName + " " + "CalendarMonthEnd"  
+                            if(weekday === 1){
+                                clsName = clsName + " " + "CalendarMonthStart"  
                             }
                             return (
                                 <div className={clsName}>{weekdaysMap[weekday][1]}</div>

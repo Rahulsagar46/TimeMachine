@@ -110,7 +110,7 @@
 
 .TabContainer{
   width: 100vw;
-  height: 65vmin;
+  height: 75vmin;
   display: flex;
   flex-direction: column;
 }
@@ -341,8 +341,8 @@
 
 /* vacation management related css here*/
 .VacationContainer{
-  width: 98%;
-  height: 60vmin;
+  width: 100%;
+  height: 65vmin;
   margin-right: 1vmin;
   margin-left: 1vmin;
   display: flex
@@ -350,16 +350,17 @@
 
 .TeamCalendarContainer{
   width:75%;
-  height: 55vmin;
+  height: 30vmin;
   display: flex;
   flex-direction: column;
-  margin-top: 2vmin;
-  margin-left: 1vmin
+  margin-top: 0vmin;
+  margin-left: 0vmin;
+  overflow-y: scroll;
 }
 
 .TeamCalendarHeader{
   width:80%;
-  height: 3vmin;
+  height: 2.5vmin;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -371,7 +372,7 @@
 
 .UserCalendarContainer{
   width:100%;
-  height: 3vmin;
+  height: 2.5vmin;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -381,7 +382,7 @@
 
 .UserName{
   width: 20%;
-  max-height: 3vmin;
+  max-height: 2.5vmin;
   text-align: left;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -403,7 +404,7 @@
 
 .MonthlyCalendarContainer{
   width:80%;
-  height: 3vmin;
+  height: 2.5vmin;
   display: flex;
   flex-direction: row;
   margin-left: 1vmin;
@@ -411,14 +412,14 @@
 
 .CalendarDay{
   width:3%;
-  height: 3vmin;
+  height: 2.5vmin;
   border-width: 2px;
   border-style:inset;
 }
 
 .CalendarDayHeader{
-  background-color: rgba(0, 0, 0, 0.744);
-  color: whitesmoke
+  background-color: rgba(0, 0, 0, 0.874);
+  color: white
 }
 
 .CalendarDayCommon{
@@ -427,9 +428,9 @@
   background-color: whitesmoke;
 }
 
-.CalendarMonthEnd{
-  border-right-width: 5px;
-  border-right-color: #2f7bd7;
+.CalendarMonthStart{
+  border-left-width: 5px;
+  border-left-color: #cf0c0c;
 }
 
 .CalendarHoliday{
@@ -442,7 +443,7 @@
 }
 
 .MonthHeaderContainer{
-  height: 3vmin;
+  height: 2.5vmin;
 }
 
 .CalendarNavContainer{

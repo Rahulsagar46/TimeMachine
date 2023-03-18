@@ -1,7 +1,7 @@
 import React from "react";
 
 const UserCalendar = ({ user, displayDates, weekdaysMap}) => {
-    
+  
     return (
             <div className="UserCalendarContainer">
                 <div className="UserName">{user}</div>
@@ -9,11 +9,11 @@ const UserCalendar = ({ user, displayDates, weekdaysMap}) => {
                     { 
                         displayDates.map(weekday => { 
                             var clsName = "CalendarDay CalendarDayCommon"
-                            if(weekdaysMap[weekday][0] === 5 || weekdaysMap[weekday][0] === 6){
+                            if(weekdaysMap[weekday][0] === 0 || weekdaysMap[weekday][0] === 6){
                                 clsName = clsName + " " + "CalendarHoliday"
                             }
-                            if(weekday==31){
-                                clsName = clsName + " " + "CalendarMonthEnd"
+                            if(weekday === 1){
+                                clsName = clsName + " " + "CalendarMonthStart"
                             }
                             return (
                                 <div className={clsName}>{weekday}</div>
