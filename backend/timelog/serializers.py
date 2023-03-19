@@ -1,7 +1,7 @@
 from datetime import datetime
 from rest_framework import serializers
 from timelog.models import User, UserDefault, UserTimeSummary, TimeLogEntry, UserTimeRecord
-from timelog.models import Department, Team, TimeLogCorrectionRequest
+from timelog.models import Department, Team, TimeLogCorrectionRequest, Holiday, Vacation, ConflictGroup
 
 from timelog.core.base import get_time_delta, get_time_entry_bounds_for_correction, is_time_within_bounds, get_day_from_number
 
@@ -273,3 +273,80 @@ class TimeLogCorrectionRequestSerializer(serializers.Serializer):
         instance.save()
 
         return instance
+
+# vacation manager
+
+
+class HolidaySerializer(serializers.Serializer):
+    year = serializers.IntegerField()
+    month = serializers.IntegerField()
+    day = serializers.IntegerField()
+    date = serializers.DateField()
+    holiday_type = serializers.IntegerField()
+    description = serializers.CharField()
+
+    def create(self, validated_data):
+        year = validated_data["year"]
+        month = validated_data["month"]
+        day = validated_data["day"]
+        date = validated_data["date"]
+        holiday_type = validated_data["holiday_type"]
+        description = validated_data.get("description", None)
+        status = validated_data.get("status", 0)
+
+        holiday = Holiday.objects.create(
+            year=year, month=month, day=day, date=date, holiday_type=holiday_type, description=description, status=status)
+
+        holiday.save()
+
+
+class VacationSerializer(serializers.Serializer):
+    vacation_id = serializers.CharField()
+    user = serializers.CharField()
+    team = serializers.CharField()
+    year = serializers.IntegerField()
+    month = serializers.IntegerField()
+    day = serializers.IntegerField()
+    date = serializers.DateField()
+    vacation_type = serializers.CharField()
+    action = serializers.IntegerField()
+    decision = serializers.IntegerField()
+    approver = serializers.CharField()
+
+    def create(self, validated_data):
+        vacation_id = validated_data["vacation_id"]
+        user = validated_data["user"]
+        team = validated_data["team"]
+        year = validated_data["year"]
+        month = validated_data["month"]
+        day = validated_data["day"]
+        date = validated_data["date"]
+        vacation_type = validated_data["vacation_type"]
+        action = validated_data["action"]
+        status = validated_data.get("status", 0)
+        decision = validated_data["decision"]
+        approver = validated_data["approver"]
+
+        user_obj = User.objects.get(pk=user)
+        vacation = Vacation.objects.create(
+            vacation_id=vacation_id, user=user_obj, team=team, year=year, month=month, day=day, date=date, vacation_type=vacation_type, action=action, status=status,
+            decision=decision, approver=approver)
+
+        vacation.save()
+
+
+class ConflictGroupSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    team = serializers.CharField()
+    status = serializers.IntegerField()
+
+    def create(self, validated_data):
+        id = validated_data["id"]
+        team = validated_data["team"]
+        status = validated_data["status"]
+        # team_obj = Team.objects.get(pk=team)
+        cg = ConflictGroup.objects.create(
+            id=id, team=team, status=status)
+
+        cg.members.set([])
+        cg.save()

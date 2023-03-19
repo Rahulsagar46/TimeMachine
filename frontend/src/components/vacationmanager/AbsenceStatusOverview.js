@@ -2,9 +2,19 @@ import React from 'react';
 import {useState} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 
-const AbsenceStatusOverview = () => {
+const AbsenceStatusOverview = ( { plannedList, appliedList} ) => {
     const [activeSideTab, setActiveSideTab] = useState("planned")
-    console.log(activeSideTab)
+    var plannedIds = []
+    var plannedEntries = {}
+    for(let i = 0; i < plannedList.length; i++){
+        var entry = plannedList[i]
+        if(plannedIds.includes(entry["vacation_id"])){
+            plannedEntries[entry["vacation_id"]].push(entry["date"])
+        }else{
+            plannedIds.push(entry["vacation_id"])
+            plannedEntries[entry["vacation_id"]] = [entry["date"]]
+        }
+    }
     const columns = [
         { field: 'col1', headerName: 'From', width: 95, headerAlign:'center', headerClassName:'DataGridCols'},
         { field: 'col2', headerName: 'To', width: 95, headerAlign:'center', headerClassName:'DataGridCols' },

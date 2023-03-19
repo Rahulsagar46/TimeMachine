@@ -185,3 +185,39 @@ class TimeLogCorrectionRequest(models.Model):
 
     def __str__(self):
         return "%s_%s_%s_%s" % (self.request_date, self.requester, self.approver, self.approver_decision)
+
+
+# vacation manager related models
+
+class Holiday(models.Model):
+    year = models.IntegerField()
+    month = models.IntegerField()
+    day = models.IntegerField()
+    date = models.DateField()
+    holiday_type = models.IntegerField(choices=[(0, "public"), (1, "special")])
+    description = models.CharField(max_length=100)
+    status = models.IntegerField(
+        choices=[(0, "active"), (1, "inactive")])
+
+
+class Vacation(models.Model):
+    vacation_id = models.CharField(max_length=100)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    team = models.CharField(max_length=15)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    day = models.IntegerField()
+    date = models.DateField()
+    vacation_type = models.CharField(max_length=50)
+    action = models.IntegerField(choices=[(0, "planned"), (1, "applied")])
+    status = models.IntegerField(choices=[(0, "active"), (1, "inactive")])
+    decision = models.IntegerField(
+        choices=[(-1, "dormant"), (0, "waiting"), (1, "approved"), (2, "rejected")])
+    approver = models.CharField(max_length=15)
+
+
+class ConflictGroup(models.Model):
+    id = models.CharField(max_length=30, primary_key=True, unique=True)
+    team = models.ForeignKey('Team', on_delete=models.CASCADE)
+    members = models.ManyToManyField('User', default=[])
+    status = models.IntegerField(choices=[(0, "active"), (1, "disabled")])

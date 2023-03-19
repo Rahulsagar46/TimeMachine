@@ -11,6 +11,7 @@ from timelog.core.time_logging_funcs import get_all_time_entries_for_the_month
 from timelog.core.time_logging_funcs import get_relevant_correction_requests
 from timelog.core.user_management_funcs import list_all_users, get_initial_user_details, create_new_user_with_relevant_data
 from timelog.core.team_management_funcs import create_new_team, create_new_department
+from timelog.core.vacation_management_funcs import add_holiday_entries, add_vacation_entries, get_team_calendar_info, add_conflict_group
 
 # initial loading parameters
 
@@ -43,6 +44,14 @@ def get_open_correction_requests(request, approver_name):
 def get_relevant_correction_requests_for_requester(request, requester):
     correction_requests = get_relevant_correction_requests(requester)
     return JsonResponse(correction_requests, safe=False)
+
+# vacation management get
+
+
+@api_view(['GET'])
+def get_team_vacation_info(request, main_user):
+    return_obj = get_team_calendar_info(main_user)
+    return JsonResponse(return_obj, safe=False)
 
 # time entry functions
 
@@ -103,6 +112,35 @@ def edit_log_entry(request):
 @csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
 def decide_correction_entry(request):
     (success, return_data) = decide_log_entry_correction(request.data)
+    if success:
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# vacation management views
+
+
+@api_view(['POST'])
+@csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
+def add_holiday_list(request):
+    (success, return_data) = add_holiday_entries(request.data)
+    if success:
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
+def add_vacation(request):
+    (success, return_data) = add_vacation_entries(request.data)
+    if success:
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@csrf_exempt  # NOTE: This has to be removed in production. This is a safety mechanism
+def add_conflict_group_for_team(request):
+    (success, return_data) = add_conflict_group(request.data)
     if success:
         return Response(status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_400_BAD_REQUEST)

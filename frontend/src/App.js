@@ -5,7 +5,8 @@ import CheekletBar from './components/global/CheekletBar';
 import ContentContainer from './components/global/ContentContainer';
 import axios from 'axios';
 
-const url = 'http://127.0.0.1:8000/rvoduru';
+const user = "rahulv"
+const url = 'http://127.0.0.1:8000/' + user;
 
 function App() {
   console.log("APP loading")
