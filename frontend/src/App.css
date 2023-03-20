@@ -451,6 +451,10 @@
   background-color: yellow;
 }
 
+.CalendarApplied{
+  background-color: rgba(123, 41, 200, 0.572);
+}
+
 .MonthHeader{
   color: #2f7bd7;
   font-weight: bold;

@@ -6,7 +6,7 @@ import CalendarNav from "./CalendarNav";
 import { getDateInfo, getNextWeekDay, getDayFromIndex } from "../../helper";
 import { getMaxDaysinMonth } from "../../helper";
 
-const TeamCalendar = ({ holidayList, plannedMap }) => {
+const TeamCalendar = ({ holidayList, plannedMap, appliedMap }) => {
     const [dateInfo, setdateInfo] = useState(getDateInfo())
     const [teamMembers, setTeamMembers] = useState(["rahulv", "manager1", "user2", "user3"])
     const dateObjUpdate = (year, monthIndex, day) => {
@@ -129,7 +129,7 @@ const TeamCalendar = ({ holidayList, plannedMap }) => {
             </div>    
             { teamMembers.map(member => {
                 return (
-                        <UserCalendar user={member} displayDates={rows} weekdaysMap={weekdaysMap} holidayList={holidayList} plannedList={plannedMap[member]}/>
+                        <UserCalendar user={member} displayDates={rows} weekdaysMap={weekdaysMap} holidayList={holidayList} plannedList={plannedMap[member]} appliedList={appliedMap[member]}/>
                         )
                     }
                 )

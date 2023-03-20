@@ -90,7 +90,6 @@ class TimeLogEntrySerializer(serializers.Serializer):
         log_state = validated_data["log_state"]
 
         user = User.objects_include_related.get(login_name=log_user)
-
         week_day_number = datetime.strptime(log_date, '%Y-%m-%d').weekday()
         week_day = get_day_from_number(week_day_number)
 
@@ -129,8 +128,18 @@ class TimeLogEntrySerializer(serializers.Serializer):
             log_entry.save()
 
             # Update the total working time in the interval in user_time_record
+            if user_time_record.total_work_time_for_day == 0:
+                net_time = -1 * \
+                    (user.userdefault.mandatory_working_time_per_day - time_interval)
+            else:
+                exisiting = user_time_record.total_work_time_for_day
+                new = user_time_record.total_work_time_for_day + time_interval
+                net_time = (new - exisiting)
+
+            user.usertimesummary.net_working_time = user.usertimesummary.net_working_time + net_time
             user_time_record.total_work_time_for_day = user_time_record.total_work_time_for_day + time_interval
             user_time_record.save()
+            user.usertimesummary.save()
 
             live_state = 0
             active_log_id = -1

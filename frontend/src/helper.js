@@ -143,3 +143,10 @@ export function getMaxDaysinMonth(year, monthIndex){
         return 28
     }
 }
+
+export function getDaysdelta(from, to){
+    const fromDate = new Date(from)
+    const toDate = new Date(to)
+    const diffTime = toDate.getTime() - fromDate.getTime()
+    return (diffTime / (1000 * 3600 * 24))
+}

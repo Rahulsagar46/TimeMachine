@@ -27,7 +27,7 @@ function App() {
   return (
     <div className="App">
       <Header initialinfo={initialinfo}/>
-      <CheekletBar />
+      <CheekletBar initialinfo={initialinfo}/>
       <ContentContainer initialinfo={initialinfo} setInitialinfo={getInitialInfo}/>
     </div>
   );

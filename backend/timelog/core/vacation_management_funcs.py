@@ -30,6 +30,7 @@ def get_team_calendar_info(main_user):
                                  (holiday["action"]))
     return_obj = {
         "common": {
+            "user": main_user,
             "team": team.id,
             "approver": team.manager.login_name
         },
